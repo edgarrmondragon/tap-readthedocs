@@ -25,7 +25,7 @@ pytest = "^6.1.2"
 black = {version = "^21.12b0", allow-prereleases = true}
 types-requests = "^2.26.1"
 isort = "^5.10.1"
-mypy = "^0.921"
+mypy = "^0.930"
 
 # Flake8
 flake8 = "^4.0.1"
