@@ -1,0 +1,20 @@
+version: 1
+send_anonymous_usage_stats: false
+project_id: tap-readthedocs
+plugins:
+  extractors:
+  - name: tap-readthedocs
+    namespace: tap_readthedocs
+    pip_url: -e .
+    capabilities:
+    - catalog
+    - discover
+    settings:
+    - name: token
+      kind: password
+  loaders:
+  - name: target-sqlite
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-sqlite.git
+    config:
+      database: output/${MELTANO_EXTRACT__LOAD_SCHEMA}.db

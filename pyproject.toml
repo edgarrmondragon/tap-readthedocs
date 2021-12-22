@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "tap-readthedocs"
+version = "0.0.1"
+description = "`tap-readthedocs` is a Singer tap for ReadTheDocs, built with the Meltano SDK for Singer Taps."
+authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
+keywords = [
+    "ELT",
+    "ReadTheDocs",
+    "singer.io",
+]
+license = "Apache 2.0"
+readme = "README.md"
+homepage = "https://github.com/edgarrmondragon/tap-readthedocs"
+repository = "https://github.com/edgarrmondragon/tap-readthedocs"
+documentation = "https://github.com/edgarrmondragon/tap-readthedocs#readme"
+
+[tool.poetry.dependencies]
+python = "<3.11,>=3.6.2"
+requests = "2.26.0"
+singer-sdk = "0.3.17"
+toolz = "0.11.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.2"
+black = {version = "^21.12b0", allow-prereleases = true}
+types-requests = "^2.26.1"
+isort = "^5.10.1"
+mypy = "^0.921"
+
+# Flake8
+flake8 = "^4.0.1"
+flake8-docstrings = "^1.6.0"
+flake8-annotations = "^2.7.0"
+darglint = "^1.8.1"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3 # Vertical Hanging Indent
+src_paths = "tap_readthedocs"
+
+[tool.pytest.ini_options]
+addopts = "-vvv"
+
+[tool.mypy]
+python_version = 3.9
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["backoff.*", "toolz.*"]
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# CLI declaration
+tap-readthedocs = 'tap_readthedocs.tap:TapReadTheDocs.cli'
