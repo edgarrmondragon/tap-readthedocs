@@ -5,6 +5,7 @@ from typing import Any, Dict, Iterable, Optional
 import requests
 import requests_cache
 from singer_sdk.authenticators import APIKeyAuthenticator
+from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 
 from tap_readthedocs.pagination import OffsetPaginator
@@ -58,6 +59,19 @@ class ReadTheDocsStream(RESTStream):
         headers = {}
         headers["User-Agent"] = f"{self.tap_name}/{self._tap.plugin_version}"
         return headers
+
+    def validate_response(self, response: requests.Response) -> None:
+        """Validate HTTP response.
+
+        Args:
+            response: A `requests.Response`_ object.
+
+        Raises:
+            RetriableAPIError: If the rate limit is hit.
+        """
+        if response.status_code == 429:
+            raise RetriableAPIError(response.reason)
+        super().validate_response(response)
 
     def get_url_params(
         self,
