@@ -1,7 +1,9 @@
 """Tests standard tap features using the built-in SDK tests library."""
 
+from requests import Response
 from singer_sdk.testing import get_standard_tap_tests
 
+from tap_readthedocs.client import ReadTheDocsPaginator
 from tap_readthedocs.tap import TapReadTheDocs
 
 SAMPLE_CONFIG = {}
@@ -12,3 +14,30 @@ def test_standard_tap_tests():
     tests = get_standard_tap_tests(TapReadTheDocs, config=SAMPLE_CONFIG)
     for test in tests:
         test()
+
+
+def test_paginator():
+    """Validate paginator that uses the page offset."""
+
+    response = Response()
+    paginator = ReadTheDocsPaginator(0, 2)
+
+    assert not paginator.finished
+    assert paginator.current_value == 0
+
+    response._content = b'{"results": [{}, {}]}'
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value == 2
+    assert paginator.count == 1
+
+    response._content = b'{"results": [{}, {}]}'
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value == 4
+    assert paginator.count == 2
+
+    response._content = b'{"results": []}'
+    paginator.advance(response)
+    assert paginator.finished
+    assert paginator.count == 3
