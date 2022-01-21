@@ -8,9 +8,17 @@ from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 
-from tap_readthedocs.pagination import OffsetPaginator
+from tap_readthedocs.pagination import APIPaginator, OffsetPaginator
 
 requests_cache.install_cache()
+
+
+class CustomPaginator(APIPaginator):
+    """Paginator that works with REST streams as they exist today."""
+
+    def get_next(self, response: requests.Response, stream: RESTStream):
+        """Get next page value by calling the stream method."""
+        return stream.get_next_page_token(response, self.current_value)
 
 
 class ReadTheDocsPaginator(OffsetPaginator):
@@ -92,35 +100,6 @@ class ReadTheDocsStream(RESTStream):
             "offset": next_page_token,
             "expand": "config",
         }
-
-    # def get_next_page_token(
-    #     self,
-    #     response: requests.Response,
-    #     previous_token: Optional[Any],
-    # ) -> Any:
-    #     """Get next page offset.
-
-    #     Args:
-    #         response: API response.
-    #         previous_token: Previous offset.
-
-    #     Returns:
-    #         Page offset.
-    #     """
-    #     if not len(response.json()["results"]):
-    #         return None
-
-    #     return 50 if previous_token is None else previous_token + 50
-
-    # def get_new_paginator(self):
-    #     class CustomPaginator(APIPaginator):
-    #         def get_next(self_paginator, response: requests.Response):
-    #             return self.get_next_page_token(
-    #                 response,
-    #                 self_paginator.current_value,
-    #             )
-
-    #     return CustomPaginator(None)
 
     def get_new_paginator(self) -> ReadTheDocsPaginator:
         """Get a fresh paginator for this API endpoint.
