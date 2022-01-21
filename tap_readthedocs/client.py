@@ -1,6 +1,6 @@
 """REST client handling, including ReadTheDocsStream base class."""
 
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Generic, Iterable, Optional, TypeVar
 
 import requests
 import requests_cache
@@ -8,17 +8,44 @@ from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 
-from tap_readthedocs.pagination import APIPaginator, OffsetPaginator
+from tap_readthedocs.pagination import APIPaginator, OffsetPaginator, TPageToken
 
 requests_cache.install_cache()
+TStream = TypeVar("TStream", bound=RESTStream)
 
 
-class CustomPaginator(APIPaginator):
+class CustomPaginator(APIPaginator[TPageToken], Generic[TPageToken, TStream]):
     """Paginator that works with REST streams as they exist today."""
 
-    def get_next(self, response: requests.Response, stream: RESTStream):
-        """Get next page value by calling the stream method."""
-        return stream.get_next_page_token(response, self.current_value)
+    def __init__(
+        self,
+        start_value: TPageToken,
+        stream: TStream,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        """Create a new paginator.
+
+        Args:
+            start_value: Initial value for the paginator
+            stream: A RESTStream instance.
+            args: Paginator positional arguments.
+            kwargs: Paginator keyword arguments.
+        """
+        super().__init__(start_value, *args, **kwargs)
+        self.stream = stream
+
+    def get_next(self, response: requests.Response) -> Optional[TPageToken]:
+        """Get next page value by calling the stream method.
+
+        Args:
+            response: API response object.
+
+        Returns:
+            The next page token or index. Return `None` from this method to indicate
+                the end of pagination.
+        """
+        return self.stream.get_next_page_token(response, self.current_value)
 
 
 class ReadTheDocsPaginator(OffsetPaginator):
