@@ -12,7 +12,6 @@ class ReadTheDocsStream(RESTStream):
 
     url_base = "https://readthedocs.org"
     records_jsonpath = "$.results[*]"
-    # next_page_token_jsonpath = "$.next_page"
 
     @property
     def authenticator(self) -> APIKeyAuthenticator:
