@@ -142,3 +142,61 @@ def test_paginator_hateos():
     paginator.advance(response)
     assert paginator.finished
     assert paginator.count == 3
+
+
+def test_paginator_header_links():
+    """Validate paginator that uses HATEOS links.
+
+    Links:
+        - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link
+        - https://datatracker.ietf.org/doc/html/rfc8288#section-3
+    """
+
+    class _HeaderLinkPaginator(HATEOASPaginator):
+        """Paginator class for APIs supporting HATEOS links in their headers."""
+
+        def get_next_url(self, response: Response) -> Optional[str]:
+            """Override this method to extract a HATEOS link from the response.
+
+            Args:
+                response: API response object.
+            """
+            return response.links.get("next", {}).get("url")
+
+    response = Response()
+    paginator = _HeaderLinkPaginator(None)
+    assert not paginator.finished
+    assert paginator.current_value is None
+    assert paginator.count == 0
+
+    response.headers.update(
+        {"Link": "<https://myapi.test/path/to/resource?page=2&limit=100>; rel=next"},
+    )
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value.hostname == "myapi.test"
+    assert paginator.current_value.path == "/path/to/resource"
+    assert paginator.current_value.query == "page=2&limit=100"
+    assert paginator.count == 1
+
+    response.headers.update(
+        {
+            "Link": (
+                "<https://myapi.test/path/to/resource?page=3&limit=100>;rel=next,"
+                "<https://myapi.test/path/to/resource?page=2&limit=100>;rel=back"
+            )
+        },
+    )
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value.hostname == "myapi.test"
+    assert paginator.current_value.path == "/path/to/resource"
+    assert paginator.current_value.query == "page=3&limit=100"
+    assert paginator.count == 2
+
+    response.headers.update(
+        {"Link": "<https://myapi.test/path/to/resource?page=3&limit=100>;rel=back"},
+    )
+    paginator.advance(response)
+    assert paginator.finished
+    assert paginator.count == 3
