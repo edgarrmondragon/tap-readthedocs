@@ -3,8 +3,11 @@
 from typing import Any, Dict, Optional
 
 import requests
+import requests_cache
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.streams import RESTStream
+
+requests_cache.install_cache()
 
 
 class ReadTheDocsStream(RESTStream):
