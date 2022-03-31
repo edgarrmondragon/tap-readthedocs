@@ -64,8 +64,8 @@ class ReadTheDocsStream(RESTStream):
     def get_next_page_token(
         self,
         response: requests.Response,
-        previous_token: Optional[Any],
-    ) -> Any:
+        previous_token: Optional[int],
+    ) -> Optional[int]:
         """Get next page offset.
 
         Args:
