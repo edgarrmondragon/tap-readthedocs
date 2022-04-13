@@ -8,14 +8,14 @@ from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 
-from tap_readthedocs.pagination import APIPaginator, OffsetPaginator, TPageToken
+from tap_readthedocs.pagination import BaseAPIPaginator, OffsetPaginator, TPageToken
 
 requests_cache.install_cache()
 TStream = TypeVar("TStream", bound=RESTStream)
 
 
 class LegacyStreamPaginator(
-    APIPaginator[TPageToken],
+    BaseAPIPaginator[TPageToken],
     Generic[TPageToken, TStream],
 ):
     """Paginator that works with REST streams as they exist today."""
