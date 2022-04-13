@@ -21,7 +21,11 @@ def test_paginator():
     """Validate paginator that uses the page offset."""
 
     response = Response()
-    paginator = ReadTheDocsPaginator(0, 2, ReadTheDocsStream.records_jsonpath)
+    paginator = ReadTheDocsPaginator(
+        start_value=0,
+        page_size=2,
+        records_jsonpath=ReadTheDocsStream.records_jsonpath,
+    )
 
     assert not paginator.finished
     assert paginator.current_value == 0
