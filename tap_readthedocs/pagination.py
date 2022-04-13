@@ -13,7 +13,12 @@ TPageToken = TypeVar("TPageToken")
 class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
     """An API paginator object."""
 
-    def __init__(self, start_value: TPageToken, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        start_value: TPageToken,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
+    ) -> None:
         """Create a new paginator.
 
         Args:
@@ -141,7 +146,7 @@ class BaseHATEOASPaginator(BaseAPIPaginator[Optional[ParseResult]], metaclass=AB
             response: API response object.
 
         Returns:
-            A parsed HATEOS link if the response has one, otherwise `None`.
+            A parsed HATEOAS link if the response has one, otherwise `None`.
         """
         next_url = self.get_next_url(response)
         return urlparse(next_url) if next_url else None
@@ -160,6 +165,9 @@ class HeaderLinkPaginator(BaseHATEOASPaginator):
 
         Args:
             response: API response object.
+
+        Returns:
+            A HATEOAS link parsed from the response headers.
         """
         return response.links.get("next", {}).get("url")
 
@@ -171,8 +179,8 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
         self,
         start_value: Optional[str],
         jsonpath: str,
-        *args: Any,
-        **kwargs: Any,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Create a new paginator.
 
@@ -233,7 +241,11 @@ class OffsetPaginator(BasePageSizePaginator):
     """Paginator class for APIs that use page offset."""
 
     def __init__(
-        self, start_value: int, page_size: int, *args: Any, **kwargs: Any
+        self,
+        start_value: int,
+        page_size: int,
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Create a new paginator.
 
