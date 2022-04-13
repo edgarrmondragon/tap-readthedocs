@@ -176,7 +176,6 @@ class ReadTheDocsStream(RESTStream):
                 next_page_token=paginator.current_value,
             )
             resp = decorated_request(prepared_request, context)
-            for row in self.parse_response(resp):
-                yield row
+            yield from self.parse_response(resp)
 
             paginator.advance(resp)

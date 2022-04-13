@@ -14,6 +14,7 @@ from tap_readthedocs.pagination import (
     BasePageNumberPaginator,
     HeaderLinkPaginator,
     JSONPathPaginator,
+    first,
 )
 
 
@@ -215,9 +216,16 @@ def test_paginator_custom_hateos():
     class _CustomHATEOSPaginator(BaseHATEOASPaginator):
         def get_next_url(self, response: Response) -> Optional[str]:
             """Get a parsed HATEOS link for the next, if the response has one."""
-            links = response.json().get("links", [])
-            next_path = next((l["href"] for l in links if l["rel"] == "next"), None)
-            return next_path
+
+            try:
+                return first(
+                    extract_jsonpath(
+                        "$.links[?(@.rel=='next')].href",
+                        response.json(),
+                    )
+                )
+            except StopIteration:
+                return None
 
     resource_path = "/path/to/resource"
 

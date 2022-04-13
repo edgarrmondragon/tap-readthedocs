@@ -1,13 +1,29 @@
 """Generic paginator classes."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Generic, Iterable, Optional, TypeVar
 from urllib.parse import ParseResult, urlparse
 
 from requests import Response
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 
+T = TypeVar("T")
 TPageToken = TypeVar("TPageToken")
+
+
+def first(iterable: Iterable[T]) -> T:
+    """Return the first element of an iterable or raise an exception.
+
+    Args:
+        iterable: An iterable.
+
+    Returns:
+        The first element of the iterable.
+
+    >>> first('ABC')
+    'A'
+    """
+    return next(iter(iterable))
 
 
 class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
