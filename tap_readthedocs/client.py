@@ -9,7 +9,12 @@ from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 
-from tap_readthedocs.pagination import BaseAPIPaginator, BaseOffsetPaginator, TPageToken
+from tap_readthedocs.pagination import (
+    BaseAPIPaginator,
+    BaseOffsetPaginator,
+    TPageToken,
+    first,
+)
 
 requests_cache.install_cache()
 TStream = TypeVar("TStream", bound=RESTStream)
@@ -75,8 +80,17 @@ class ReadTheDocsPaginator(BaseOffsetPaginator):
         Returns:
             True if response contains at least one item.
         """
-        all_matches = extract_jsonpath(self._records_jsonpath, response.json())
-        return next(all_matches, None) is not None
+        try:
+            first(
+                extract_jsonpath(
+                    self._records_jsonpath,
+                    response.json(),
+                )
+            )
+        except StopIteration:
+            return False
+
+        return True
 
 
 class ReadTheDocsStream(RESTStream):

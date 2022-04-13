@@ -114,11 +114,17 @@ def test_paginator_offset():
             Returns:
                 Boolean flag used to indicate if the endpoint has more pages.
             """
-            next_record = next(
-                extract_jsonpath(self._records_jsonpath, response.json()),
-                None,
-            )
-            return next_record is not None
+            try:
+                first(
+                    extract_jsonpath(
+                        self._records_jsonpath,
+                        response.json(),
+                    )
+                )
+            except StopIteration:
+                return False
+
+            return True
 
     response = Response()
     paginator = _TestOffsetPaginator(0, 2, "$[*]")
