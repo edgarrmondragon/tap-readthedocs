@@ -22,7 +22,7 @@ def test_paginator_base_missing_implementation():
 
     with pytest.raises(
         TypeError,
-        match="Can't instantiate abstract class .* with abstract methods get_next",
+        match="Can't instantiate abstract class .* get_next",
     ):
         BaseAPIPaginator(0)
 
@@ -32,7 +32,7 @@ def test_paginator_page_number_missing_implementation():
 
     with pytest.raises(
         TypeError,
-        match="Can't instantiate abstract class .* with abstract methods has_more",
+        match="Can't instantiate abstract class .* has_more",
     ):
         BasePageNumberPaginator(1)
 
@@ -42,7 +42,7 @@ def test_paginator_offset_missing_implementation():
 
     with pytest.raises(
         TypeError,
-        match="Can't instantiate abstract class .* with abstract methods has_more",
+        match="Can't instantiate abstract class .* has_more",
     ):
         BaseOffsetPaginator(0, 100)
 
@@ -52,7 +52,7 @@ def test_paginator_hateoas_missing_implementation():
 
     with pytest.raises(
         TypeError,
-        match="Can't instantiate abstract class .* with abstract methods get_next_url",
+        match="Can't instantiate abstract class .* get_next_url",
     ):
         BaseHATEOASPaginator(None)
 
