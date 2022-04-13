@@ -203,11 +203,24 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
             The next page token.
         """
         all_matches = extract_jsonpath(self._jsonpath, response.json())
-        return next(iter(all_matches), None)
+        return next(all_matches, None)
 
 
-class PageNumberPaginator(BaseAPIPaginator[int]):
+class BasePageNumberPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
     """Paginator class for APIs that use page number."""
+
+    @abstractmethod
+    def has_more(self, response: Response) -> bool:
+        """Override this method to check if the endpoint has any pages left.
+
+        Args:
+            response: API response object.
+
+        Returns:
+            Boolean flag used to indicate if the endpoint has more pages.
+
+        """
+        ...
 
     def get_next(self, response: Response) -> Optional[int]:
         """Get the next page number.
@@ -221,7 +234,7 @@ class PageNumberPaginator(BaseAPIPaginator[int]):
         return self._value + 1
 
 
-class OffsetPaginator(BaseAPIPaginator[int]):
+class BaseOffsetPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
     """Paginator class for APIs that use page offset."""
 
     def __init__(
@@ -241,6 +254,18 @@ class OffsetPaginator(BaseAPIPaginator[int]):
         """
         super().__init__(start_value)
         self._page_size = page_size
+
+    @abstractmethod
+    def has_more(self, response: Response) -> bool:
+        """Override this method to check if the endpoint has any pages left.
+
+        Args:
+            response: API response object.
+
+        Returns:
+            Boolean flag used to indicate if the endpoint has more pages.
+        """
+        ...
 
     def get_next(self, response: Response) -> Optional[int]:
         """Get the next page offset.

@@ -4,6 +4,7 @@ from requests import Response
 from singer_sdk.testing import get_standard_tap_tests
 
 from tap_readthedocs.client import ReadTheDocsPaginator
+from tap_readthedocs.streams import ReadTheDocsStream
 from tap_readthedocs.tap import TapReadTheDocs
 
 SAMPLE_CONFIG = {}
@@ -20,7 +21,7 @@ def test_paginator():
     """Validate paginator that uses the page offset."""
 
     response = Response()
-    paginator = ReadTheDocsPaginator(0, 2)
+    paginator = ReadTheDocsPaginator(0, 2, ReadTheDocsStream.records_jsonpath)
 
     assert not paginator.finished
     assert paginator.current_value == 0

@@ -6,9 +6,10 @@ import requests
 import requests_cache
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
+from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 
-from tap_readthedocs.pagination import BaseAPIPaginator, OffsetPaginator, TPageToken
+from tap_readthedocs.pagination import BaseAPIPaginator, BaseOffsetPaginator, TPageToken
 
 requests_cache.install_cache()
 TStream = TypeVar("TStream", bound=RESTStream)
@@ -51,8 +52,19 @@ class LegacyStreamPaginator(
         return self.stream.get_next_page_token(response, self.current_value)
 
 
-class ReadTheDocsPaginator(OffsetPaginator):
+class ReadTheDocsPaginator(BaseOffsetPaginator):
     """Paginator that stops when a page with 0 items is returned."""
+
+    def __init__(self, start_value: int, page_size: int, records_jsonpath: str) -> None:
+        """Create a new paginator.
+
+        Args:
+            start_value: Initial value.
+            page_size: Number of items per page.
+            records_jsonpath: A JSONPath expression.
+        """
+        super().__init__(start_value, page_size)
+        self._records_jsonpath = records_jsonpath
 
     def has_more(self, response: requests.Response) -> bool:
         """Check if response has any items.
@@ -63,7 +75,8 @@ class ReadTheDocsPaginator(OffsetPaginator):
         Returns:
             True if response contains at least one item.
         """
-        return len(response.json()["results"]) > 0
+        all_matches = extract_jsonpath(self._records_jsonpath, response.json())
+        return next(all_matches, None) is not None
 
 
 class ReadTheDocsStream(RESTStream):
@@ -137,7 +150,11 @@ class ReadTheDocsStream(RESTStream):
         Returns:
             A paginator instance.
         """
-        return ReadTheDocsPaginator(start_value=0, page_size=self.page_size)
+        return ReadTheDocsPaginator(
+            start_value=0,
+            page_size=self.page_size,
+            records_jsonpath=self.records_jsonpath,
+        )
 
     def request_records(self, context: Optional[dict]) -> Iterable[dict]:
         """Request records from REST endpoint(s), returning response records.

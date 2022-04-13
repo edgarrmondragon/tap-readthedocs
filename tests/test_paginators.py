@@ -3,22 +3,98 @@
 import json
 from typing import Optional
 
+import pytest
 from requests import Response
-
 from singer_sdk.helpers.jsonpath import extract_jsonpath
+
 from tap_readthedocs.pagination import (
+    BaseAPIPaginator,
     BaseHATEOASPaginator,
+    BaseOffsetPaginator,
+    BasePageNumberPaginator,
     HeaderLinkPaginator,
     JSONPathPaginator,
-    OffsetPaginator,
-    PageNumberPaginator,
 )
+
+
+def test_paginator_base_missing_implementation():
+    """Validate that `BaseAPIPaginator` implementation requires `get_next`."""
+
+    with pytest.raises(
+        TypeError,
+        match="Can't instantiate abstract class .* with abstract methods get_next",
+    ):
+        BaseAPIPaginator(0)
+
+
+def test_paginator_page_number_missing_implementation():
+    """Validate that `BasePageNumberPaginator` implementation requires `has_more`."""
+
+    with pytest.raises(
+        TypeError,
+        match="Can't instantiate abstract class .* with abstract methods has_more",
+    ):
+        BasePageNumberPaginator(1)
+
+
+def test_paginator_offset_missing_implementation():
+    """Validate that `BaseOffsetPaginator` implementation requires `has_more`."""
+
+    with pytest.raises(
+        TypeError,
+        match="Can't instantiate abstract class .* with abstract methods has_more",
+    ):
+        BaseOffsetPaginator(0, 100)
+
+
+def test_paginator_hateoas_missing_implementation():
+    """Validate that `BaseHATEOASPaginator` implementation requires `get_next_url`."""
+
+    with pytest.raises(
+        TypeError,
+        match="Can't instantiate abstract class .* with abstract methods get_next_url",
+    ):
+        BaseHATEOASPaginator(None)
+
+
+def test_paginator_page_number():
+    """Validate paginator that uses the page number."""
+
+    class _TestPageNumberPaginator(BasePageNumberPaginator):
+        def has_more(self, response: Response) -> bool:
+            return response.json()["hasMore"]
+
+    has_more_response = b'{"hasMore": true}'
+    no_more_response = b'{"hasMore": false}'
+
+    response = Response()
+    paginator = _TestPageNumberPaginator(0)
+    assert not paginator.finished
+    assert paginator.current_value == 0
+    assert paginator.count == 0
+
+    response._content = has_more_response
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value == 1
+    assert paginator.count == 1
+
+    response._content = has_more_response
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value == 2
+    assert paginator.count == 2
+
+    response._content = no_more_response
+    paginator.advance(response)
+    assert paginator.finished
+    assert paginator.count == 3
 
 
 def test_paginator_offset():
     """Validate paginator that uses the page offset."""
 
-    class _TestOffsetPaginator(OffsetPaginator):
+    class _TestOffsetPaginator(BaseOffsetPaginator):
         def __init__(
             self,
             start_value: int,
@@ -62,40 +138,6 @@ def test_paginator_offset():
     assert paginator.count == 2
 
     response._content = b"[]"
-    paginator.advance(response)
-    assert paginator.finished
-    assert paginator.count == 3
-
-
-def test_paginator_page_number():
-    """Validate paginator that uses the page number."""
-
-    class _TestPageNumberPaginator(PageNumberPaginator):
-        def has_more(self, response: Response) -> bool:
-            return response.json()["hasMore"]
-
-    has_more_response = b'{"hasMore": true}'
-    no_more_response = b'{"hasMore": false}'
-
-    response = Response()
-    paginator = _TestPageNumberPaginator(0)
-    assert not paginator.finished
-    assert paginator.current_value == 0
-    assert paginator.count == 0
-
-    response._content = has_more_response
-    paginator.advance(response)
-    assert not paginator.finished
-    assert paginator.current_value == 1
-    assert paginator.count == 1
-
-    response._content = has_more_response
-    paginator.advance(response)
-    assert not paginator.finished
-    assert paginator.current_value == 2
-    assert paginator.count == 2
-
-    response._content = no_more_response
     paginator.advance(response)
     assert paginator.finished
     assert paginator.count == 3
