@@ -5,6 +5,7 @@ from typing import Optional
 
 from requests import Response
 
+from singer_sdk.helpers.jsonpath import extract_jsonpath
 from tap_readthedocs.pagination import (
     BaseHATEOASPaginator,
     HeaderLinkPaginator,
@@ -18,25 +19,52 @@ def test_paginator_offset():
     """Validate paginator that uses the page offset."""
 
     class _TestOffsetPaginator(OffsetPaginator):
+        def __init__(
+            self,
+            start_value: int,
+            page_size: int,
+            records_jsonpath: str,
+        ) -> None:
+            super().__init__(start_value, page_size)
+            self._records_jsonpath = records_jsonpath
+
         def has_more(self, response: Response) -> bool:
-            return response.json()["hasMore"]
+            """Check if response has any records.
+
+            Args:
+                response: API response object.
+
+            Returns:
+                Boolean flag used to indicate if the endpoint has more pages.
+            """
+            next_record = next(
+                extract_jsonpath(self._records_jsonpath, response.json()),
+                None,
+            )
+            return next_record is not None
 
     response = Response()
-    paginator = _TestOffsetPaginator(0, 2)
+    paginator = _TestOffsetPaginator(0, 2, "$[*]")
     assert not paginator.finished
     assert paginator.current_value == 0
     assert paginator.count == 0
 
-    response._content = b'{"hasMore": true}'
+    response._content = b'[{"id": 1}, {"id": 2}]'
     paginator.advance(response)
     assert not paginator.finished
     assert paginator.current_value == 2
     assert paginator.count == 1
 
-    response._content = b'{"hasMore": false}'
+    response._content = b'[{"id": 3}]'
+    paginator.advance(response)
+    assert not paginator.finished
+    assert paginator.current_value == 4
+    assert paginator.count == 2
+
+    response._content = b"[]"
     paginator.advance(response)
     assert paginator.finished
-    assert paginator.count == 2
+    assert paginator.count == 3
 
 
 def test_paginator_page_number():

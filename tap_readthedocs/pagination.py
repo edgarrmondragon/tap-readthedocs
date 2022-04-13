@@ -206,23 +206,7 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
         return next(iter(all_matches), None)
 
 
-class BasePageSizePaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
-    """Paginator class for APIs that use page size and page number or offset."""
-
-    @abstractmethod
-    def has_more(self, response: Response) -> bool:
-        """Override this method to check if the endpoint has any pages left.
-
-        Args:
-            response: API response object.
-
-        Returns:
-            Boolean flag used to indicate if the endpoint has more pages.
-        """
-        ...
-
-
-class PageNumberPaginator(BasePageSizePaginator):
+class PageNumberPaginator(BaseAPIPaginator[int]):
     """Paginator class for APIs that use page number."""
 
     def get_next(self, response: Response) -> Optional[int]:
@@ -237,7 +221,7 @@ class PageNumberPaginator(BasePageSizePaginator):
         return self._value + 1
 
 
-class OffsetPaginator(BasePageSizePaginator):
+class OffsetPaginator(BaseAPIPaginator[int]):
     """Paginator class for APIs that use page offset."""
 
     def __init__(
