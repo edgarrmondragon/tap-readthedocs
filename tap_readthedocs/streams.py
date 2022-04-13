@@ -169,8 +169,9 @@ class Builds(ReadTheDocsStream):
         Returns:
             Modified record dictionary.
         """
-        new_row = update_in(row, ["config", "python", "version"], str, "")
-        return new_row
+        if row["config"]:
+            row = update_in(row, ["config", "python", "version"], str, "")
+        return row
 
 
 class Subprojects(ReadTheDocsStream):
