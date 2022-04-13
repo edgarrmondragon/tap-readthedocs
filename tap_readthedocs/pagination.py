@@ -10,7 +10,7 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 TPageToken = TypeVar("TPageToken")
 
 
-class APIPaginator(Generic[TPageToken], metaclass=ABCMeta):
+class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
     """An API paginator object."""
 
     def __init__(self, start_value: TPageToken, *args: Any, **kwargs: Any) -> None:
@@ -122,7 +122,7 @@ class APIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         ...
 
 
-class HATEOASPaginator(APIPaginator[Optional[ParseResult]], metaclass=ABCMeta):
+class BaseHATEOASPaginator(BaseAPIPaginator[Optional[ParseResult]], metaclass=ABCMeta):
     """Paginator class for APIs supporting HATEOS links in their responses."""
 
     @abstractmethod
@@ -147,7 +147,24 @@ class HATEOASPaginator(APIPaginator[Optional[ParseResult]], metaclass=ABCMeta):
         return urlparse(next_url) if next_url else None
 
 
-class JSONPathPaginator(APIPaginator[Optional[str]]):
+class HeaderLinkPaginator(BaseHATEOASPaginator):
+    """Paginator class for APIs supporting HATEOS links in their headers.
+
+    Links:
+        - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link
+        - https://datatracker.ietf.org/doc/html/rfc8288#section-3
+    """
+
+    def get_next_url(self, response: Response) -> Optional[str]:
+        """Override this method to extract a HATEOS link from the response.
+
+        Args:
+            response: API response object.
+        """
+        return response.links.get("next", {}).get("url")
+
+
+class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
     """Paginator class for APIs returning a pagination token in the response body."""
 
     def __init__(
@@ -181,7 +198,7 @@ class JSONPathPaginator(APIPaginator[Optional[str]]):
         return next(iter(all_matches), None)
 
 
-class BasePageSizePaginator(APIPaginator[int], metaclass=ABCMeta):
+class BasePageSizePaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
     """Paginator class for APIs that use page size and page number or offset."""
 
     @abstractmethod
