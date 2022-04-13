@@ -14,7 +14,10 @@ requests_cache.install_cache()
 TStream = TypeVar("TStream", bound=RESTStream)
 
 
-class CustomPaginator(APIPaginator[TPageToken], Generic[TPageToken, TStream]):
+class LegacyStreamPaginator(
+    APIPaginator[TPageToken],
+    Generic[TPageToken, TStream],
+):
     """Paginator that works with REST streams as they exist today."""
 
     def __init__(
