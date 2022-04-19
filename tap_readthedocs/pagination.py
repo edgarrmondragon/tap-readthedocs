@@ -32,8 +32,8 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
     def __init__(
         self,
         start_value: TPageToken,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """Create a new paginator.
 
@@ -195,8 +195,8 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
         self,
         start_value: Optional[str],
         jsonpath: str,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """Create a new paginator.
 
@@ -257,8 +257,8 @@ class BaseOffsetPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
         self,
         start_value: int,
         page_size: int,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """Create a new paginator.
 

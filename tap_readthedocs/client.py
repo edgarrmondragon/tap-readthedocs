@@ -30,8 +30,8 @@ class LegacyStreamPaginator(
         self,
         start_value: TPageToken,
         stream: TStream,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """Create a new paginator.
 
