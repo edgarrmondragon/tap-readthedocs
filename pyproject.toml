@@ -23,7 +23,7 @@ requests-cache = "^0.9.4"
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 black = {version = "^22.3", allow-prereleases = true}
-types-requests = "^2.27.29"
+types-requests = "^2.27.30"
 isort = "^5.10.1"
 mypy = "^0.960"
 
