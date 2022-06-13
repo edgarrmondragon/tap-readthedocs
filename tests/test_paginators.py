@@ -1,7 +1,8 @@
 """Tests generic paginator classes."""
 
+from __future__ import annotations
+
 import json
-from typing import Optional
 
 import pytest
 from requests import Response
@@ -172,9 +173,9 @@ def test_paginator_jsonpath():
 
 
 def test_paginator_header_links():
-    """Validate paginator that uses HATEOS links."""
+    """Validate paginator that uses HATEOAS links."""
 
-    api_hostname = "myapi.test"
+    api_hostname = "my.api.test"
     resource_path = "/path/to/resource"
 
     response = Response()
@@ -216,12 +217,12 @@ def test_paginator_header_links():
     assert paginator.count == 3
 
 
-def test_paginator_custom_hateos():
-    """Validate paginator that uses HATEOS links."""
+def test_paginator_custom_hateoas():
+    """Validate paginator that uses HATEOAS links."""
 
-    class _CustomHATEOSPaginator(BaseHATEOASPaginator):
-        def get_next_url(self, response: Response) -> Optional[str]:
-            """Get a parsed HATEOS link for the next, if the response has one."""
+    class _CustomHATEOASPaginator(BaseHATEOASPaginator):
+        def get_next_url(self, response: Response) -> str | None:
+            """Get a parsed HATEOAS link for the next, if the response has one."""
 
             try:
                 return first(
@@ -236,7 +237,7 @@ def test_paginator_custom_hateos():
     resource_path = "/path/to/resource"
 
     response = Response()
-    paginator = _CustomHATEOSPaginator(None)
+    paginator = _CustomHATEOASPaginator(None)
     assert not paginator.finished
     assert paginator.current_value is None
     assert paginator.count == 0

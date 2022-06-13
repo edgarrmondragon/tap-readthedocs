@@ -1,5 +1,7 @@
 """Generic paginator classes."""
 
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from typing import Any, Generic, Iterable, Optional, TypeVar
 from urllib.parse import ParseResult, urlparse
@@ -45,6 +47,7 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         self._value: TPageToken = start_value
         self._page_count = 0
         self._finished = False
+        self._last_seen_record: dict | None = None
 
     @property
     def current_value(self) -> TPageToken:
@@ -130,7 +133,7 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         return True
 
     @abstractmethod
-    def get_next(self, response: Response) -> Optional[TPageToken]:
+    def get_next(self, response: Response) -> TPageToken | None:
         """Get the next pagination token or index from the API response.
 
         Args:
@@ -144,18 +147,18 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
 
 
 class BaseHATEOASPaginator(BaseAPIPaginator[Optional[ParseResult]], metaclass=ABCMeta):
-    """Paginator class for APIs supporting HATEOS links in their responses."""
+    """Paginator class for APIs supporting HATEOAS links in their responses."""
 
     @abstractmethod
-    def get_next_url(self, response: Response) -> Optional[str]:
-        """Override this method to extract a HATEOS link from the response.
+    def get_next_url(self, response: Response) -> str | None:
+        """Override this method to extract a HATEOAS link from the response.
 
         Args:
             response: API response object.
         """
         ...
 
-    def get_next(self, response: Response) -> Optional[ParseResult]:
+    def get_next(self, response: Response) -> ParseResult | None:
         """Get the next pagination token or index from the API response.
 
         Args:
@@ -169,15 +172,15 @@ class BaseHATEOASPaginator(BaseAPIPaginator[Optional[ParseResult]], metaclass=AB
 
 
 class HeaderLinkPaginator(BaseHATEOASPaginator):
-    """Paginator class for APIs supporting HATEOS links in their headers.
+    """Paginator class for APIs supporting HATEOAS links in their headers.
 
     Links:
         - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link
         - https://datatracker.ietf.org/doc/html/rfc8288#section-3
     """
 
-    def get_next_url(self, response: Response) -> Optional[str]:
-        """Override this method to extract a HATEOS link from the response.
+    def get_next_url(self, response: Response) -> str | None:
+        """Override this method to extract a HATEOAS link from the response.
 
         Args:
             response: API response object.
@@ -193,7 +196,7 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
 
     def __init__(
         self,
-        start_value: Optional[str],
+        start_value: str | None,
         jsonpath: str,
         *args: Any,
         **kwargs: Any,
@@ -209,7 +212,7 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
         super().__init__(start_value)
         self._jsonpath = jsonpath
 
-    def get_next(self, response: Response) -> Optional[str]:
+    def get_next(self, response: Response) -> str | None:
         """Get the next page token.
 
         Args:
@@ -238,7 +241,7 @@ class BasePageNumberPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
         """
         ...
 
-    def get_next(self, response: Response) -> Optional[int]:
+    def get_next(self, response: Response) -> int | None:
         """Get the next page number.
 
         Args:
@@ -283,7 +286,7 @@ class BaseOffsetPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
         """
         ...
 
-    def get_next(self, response: Response) -> Optional[int]:
+    def get_next(self, response: Response) -> int | None:
         """Get the next page offset.
 
         Args:
