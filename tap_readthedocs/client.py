@@ -1,6 +1,8 @@
 """REST client handling, including ReadTheDocsStream base class."""
 
-from typing import Any, Dict, Generic, Iterable, Optional, TypeVar
+from __future__ import annotations
+
+from typing import Any, Generic, Iterable, TypeVar
 
 import requests
 import requests_cache
@@ -44,7 +46,7 @@ class LegacyStreamPaginator(
         super().__init__(start_value, *args, **kwargs)
         self.stream = stream
 
-    def get_next(self, response: requests.Response) -> Optional[TPageToken]:
+    def get_next(self, response: requests.Response) -> TPageToken | None:
         """Get next page value by calling the stream method.
 
         Args:
@@ -140,9 +142,9 @@ class ReadTheDocsStream(RESTStream):
 
     def get_url_params(
         self,
-        context: Optional[dict],
-        next_page_token: Optional[Any],
-    ) -> Dict[str, Any]:
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
         """Get URL query parameters.
 
         Args:
@@ -170,7 +172,7 @@ class ReadTheDocsStream(RESTStream):
             records_jsonpath=self.records_jsonpath,
         )
 
-    def request_records(self, context: Optional[dict]) -> Iterable[dict]:
+    def request_records(self, context: dict | None) -> Iterable[dict]:
         """Request records from REST endpoint(s), returning response records.
 
         If pagination is detected, pages will be recursed automatically.
