@@ -278,3 +278,49 @@ def test_paginator_custom_hateoas():
     paginator.advance(response)
     assert paginator.finished
     assert paginator.count == 3
+
+
+def test_paginator_iter_records():
+    """Validate paginator that uses last seen record."""
+
+    class _DummyPaginator(JSONPathPaginator):
+        pass
+
+    paginator = _DummyPaginator(None, "$.nextPage", records_jsonpath="$.data[*]")
+    assert paginator.last_seen_record is None
+    assert not paginator.finished
+    assert paginator.current_value is None
+    assert paginator.count == 0
+
+    response = Response()
+    response._content = json.dumps(
+        {
+            "data": [
+                {"id": 1},
+                {"id": 2},
+                {"id": 3},
+            ],
+            "nextPage": "abc",
+        }
+    ).encode()
+    records = list(paginator.iter_records(response))
+    assert len(records) == 3
+    assert paginator.last_seen_record == {"id": 3}
+    assert not paginator.finished
+    assert paginator.current_value == "abc"
+    assert paginator.count == 1
+
+    response._content = json.dumps(
+        {
+            "data": [
+                {"id": 4},
+                {"id": 5},
+            ],
+            "nextPage": None,
+        }
+    ).encode()
+    records = list(paginator.iter_records(response))
+    assert len(records) == 2
+    assert paginator.last_seen_record == {"id": 5}
+    assert paginator.finished
+    assert paginator.count == 2

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Generic, Iterable, TypeVar
+from typing import Any, Generator, Generic, Iterable, TypeVar
 
 import requests
 import requests_cache
@@ -58,20 +58,20 @@ class LegacyStreamPaginator(
         """
         return self.stream.get_next_page_token(response, self.current_value)
 
+    def parse_records(self, response: requests.Response) -> Generator[dict, None, None]:
+        """Parse records from the response.
+
+        Args:
+            response: API response object.
+
+        Yields:
+            Page records.
+        """
+        yield from self.stream.parse_response(response)
+
 
 class ReadTheDocsPaginator(BaseOffsetPaginator):
     """Paginator that stops when a page with 0 items is returned."""
-
-    def __init__(self, start_value: int, page_size: int, records_jsonpath: str) -> None:
-        """Create a new paginator.
-
-        Args:
-            start_value: Initial value.
-            page_size: Number of items per page.
-            records_jsonpath: A JSONPath expression.
-        """
-        super().__init__(start_value, page_size)
-        self._records_jsonpath = records_jsonpath
 
     def has_more(self, response: requests.Response) -> bool:
         """Check if response has any items.
@@ -101,6 +101,16 @@ class ReadTheDocsStream(RESTStream):
     url_base = "https://readthedocs.org"
     records_jsonpath = "$.results[*]"
     page_size = 50
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Create a new stream.
+
+        Args:
+            args: Stream positional arguments.
+            kwargs: Stream keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
+        self.paginator: ReadTheDocsPaginator | None = None
 
     @property
     def authenticator(self) -> APIKeyAuthenticator:
@@ -192,6 +202,5 @@ class ReadTheDocsStream(RESTStream):
                 next_page_token=paginator.current_value,
             )
             resp = decorated_request(prepared_request, context)
-            yield from self.parse_response(resp)
 
-            paginator.advance(resp)
+            yield from paginator.iter_records(resp)

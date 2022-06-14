@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Generic, Iterable, Optional, TypeVar
+from typing import Any, Generator, Generic, Iterable, Optional, TypeVar
 from urllib.parse import ParseResult, urlparse
 
 from requests import Response
@@ -34,20 +34,19 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
     def __init__(
         self,
         start_value: TPageToken,
-        *args: Any,
-        **kwargs: Any,
+        records_jsonpath: str = "$[*]",
     ) -> None:
         """Create a new paginator.
 
         Args:
             start_value: Initial value.
-            args: Paginator positional arguments.
-            kwargs: Paginator keyword arguments.
+            records_jsonpath: JSONPath expression to extract records from the response.
         """
         self._value: TPageToken = start_value
         self._page_count = 0
         self._finished = False
         self._last_seen_record: dict | None = None
+        self._records_jsonpath = records_jsonpath
 
     @property
     def current_value(self) -> TPageToken:
@@ -75,6 +74,24 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
             Number of pages.
         """
         return self._page_count
+
+    @property
+    def last_seen_record(self) -> dict | None:
+        """Get the last seen record.
+
+        Returns:
+            The last seen record.
+        """
+        return self._last_seen_record
+
+    @last_seen_record.setter
+    def last_seen_record(self, record: dict | None) -> None:
+        """Set the last seen record.
+
+        Args:
+            record: The last seen record.
+        """
+        self._last_seen_record = record
 
     def __str__(self) -> str:
         """Stringify this object.
@@ -121,6 +138,21 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         else:
             self._value = new_value
 
+    def iter_records(self, response: Response) -> Generator[dict, None, None]:
+        """Override this method to iterate over records in the response.
+
+        Args:
+            response: API response object.
+
+        Yields:
+            Records.
+        """
+        for record in self.parse_records(response):
+            self.last_seen_record = record
+            yield record
+
+        self.advance(response)
+
     def has_more(self, response: Response) -> bool:
         """Override this method to check if the endpoint has any pages left.
 
@@ -131,6 +163,17 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
             Boolean flag used to indicate if the endpoint has more pages.
         """
         return True
+
+    def parse_records(self, response: Response) -> Generator[dict, None, None]:
+        """Parse records from the response.
+
+        Args:
+            response: API response object.
+
+        Yields:
+            Page records.
+        """
+        yield from extract_jsonpath(self._records_jsonpath, input=response.json())
 
     @abstractmethod
     def get_next(self, response: Response) -> TPageToken | None:
@@ -209,7 +252,7 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
             args: Paginator positional arguments.
             kwargs: Paginator keyword arguments.
         """
-        super().__init__(start_value)
+        super().__init__(start_value, *args, **kwargs)
         self._jsonpath = jsonpath
 
     def get_next(self, response: Response) -> str | None:
@@ -271,7 +314,7 @@ class BaseOffsetPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
             args: Paginator positional arguments.
             kwargs: Paginator keyword arguments.
         """
-        super().__init__(start_value)
+        super().__init__(start_value, *args, **kwargs)
         self._page_size = page_size
 
     @abstractmethod
