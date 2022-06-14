@@ -46,6 +46,7 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         self._page_count = 0
         self._finished = False
         self._last_seen_record: dict | None = None
+        self._first_page_record: dict | None = None
         self._records_jsonpath = records_jsonpath
 
     @property
@@ -147,7 +148,13 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         Yields:
             Records.
         """
-        for record in self.parse_records(response):
+        records = self.parse_records(response)
+        self._first_page_record = first(records)
+
+        if self._first_page_record is not None:
+            yield self._first_page_record
+
+        for record in records:
             self.last_seen_record = record
             yield record
 
