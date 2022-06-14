@@ -15,6 +15,7 @@ from tap_readthedocs.pagination import (
     BasePageNumberPaginator,
     HeaderLinkPaginator,
     JSONPathPaginator,
+    SinglePagePaginator,
     first,
 )
 
@@ -27,6 +28,21 @@ def test_paginator_base_missing_implementation():
         match="Can't instantiate abstract class .* get_next",
     ):
         BaseAPIPaginator(0)
+
+
+def test_single_page_paginator():
+    """Validate single page paginator."""
+
+    response = Response()
+    paginator = SinglePagePaginator()
+    assert not paginator.finished
+    assert paginator.current_value is None
+    assert paginator.count == 0
+
+    paginator.advance(response)
+    assert paginator.finished
+    assert paginator.current_value is None
+    assert paginator.count == 1
 
 
 def test_paginator_page_number_missing_implementation():
