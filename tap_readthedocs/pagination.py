@@ -146,6 +146,26 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
         ...
 
 
+class SinglePagePaginator(BaseAPIPaginator[None]):
+    """A paginator that does works with single-page endpoints."""
+
+    def __init__(self) -> None:
+        """Create a new paginator."""
+        super().__init__(None)
+
+    def get_next(self, response: Response) -> None:
+        """Get the next pagination token or index from the API response.
+
+        Args:
+            response: API response object.
+
+        Returns:
+            The next page token or index. Return `None` from this method to indicate
+                the end of pagination.
+        """
+        return None
+
+
 class BaseHATEOASPaginator(BaseAPIPaginator[Optional[ParseResult]], metaclass=ABCMeta):
     """Paginator class for APIs supporting HATEOAS links in their responses."""
 
