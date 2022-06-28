@@ -31,18 +31,11 @@ def first(iterable: Iterable[T]) -> T:
 class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
     """An API paginator object."""
 
-    def __init__(
-        self,
-        start_value: TPageToken,
-        *args: Any,
-        **kwargs: Any,
-    ) -> None:
+    def __init__(self, start_value: TPageToken) -> None:
         """Create a new paginator.
 
         Args:
             start_value: Initial value.
-            args: Paginator positional arguments.
-            kwargs: Paginator keyword arguments.
         """
         self._value: TPageToken = start_value
         self._page_count = 0
@@ -149,9 +142,14 @@ class BaseAPIPaginator(Generic[TPageToken], metaclass=ABCMeta):
 class SinglePagePaginator(BaseAPIPaginator[None]):
     """A paginator that does works with single-page endpoints."""
 
-    def __init__(self) -> None:
-        """Create a new paginator."""
-        super().__init__(None)
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Create a new paginator.
+
+        Args:
+            args: Paginator positional arguments for base class.
+            kwargs: Paginator keyword arguments for base class.
+        """
+        super().__init__(None, *args, **kwargs)
 
     def get_next(self, response: Response) -> None:
         """Get the next pagination token or index from the API response.
@@ -226,10 +224,10 @@ class JSONPathPaginator(BaseAPIPaginator[Optional[str]]):
         Args:
             start_value: Initial value.
             jsonpath: A JSONPath expression.
-            args: Paginator positional arguments.
-            kwargs: Paginator keyword arguments.
+            args: Paginator positional arguments for base class.
+            kwargs: Paginator keyword arguments for base class.
         """
-        super().__init__(start_value)
+        super().__init__(start_value, *args, **kwargs)
         self._jsonpath = jsonpath
 
     def get_next(self, response: Response) -> str | None:
@@ -288,10 +286,10 @@ class BaseOffsetPaginator(BaseAPIPaginator[int], metaclass=ABCMeta):
         Args:
             start_value: Initial value.
             page_size: Constant page size.
-            args: Paginator positional arguments.
-            kwargs: Paginator keyword arguments.
+            args: Paginator positional arguments for base class.
+            kwargs: Paginator keyword arguments for base class.
         """
-        super().__init__(start_value)
+        super().__init__(start_value, *args, **kwargs)
         self._page_size = page_size
 
     @abstractmethod

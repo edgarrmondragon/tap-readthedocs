@@ -1,5 +1,9 @@
 """Tests standard tap features using the built-in SDK tests library."""
 
+from __future__ import annotations
+
+from typing import Any
+
 from requests import Response
 from singer_sdk.testing import get_standard_tap_tests
 
@@ -7,7 +11,7 @@ from tap_readthedocs.client import ReadTheDocsPaginator
 from tap_readthedocs.streams import ReadTheDocsStream
 from tap_readthedocs.tap import TapReadTheDocs
 
-SAMPLE_CONFIG = {}
+SAMPLE_CONFIG: dict[str, Any] = {}
 
 
 def test_standard_tap_tests():
