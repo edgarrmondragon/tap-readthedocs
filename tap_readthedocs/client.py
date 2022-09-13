@@ -2,61 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Any, Generic, Iterable, TypeVar
+from typing import Any, Iterable, TypeVar
 
 import requests
 import requests_cache
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.helpers.jsonpath import extract_jsonpath
+from singer_sdk.pagination import BaseOffsetPaginator, first
 from singer_sdk.streams import RESTStream
-
-from tap_readthedocs.pagination import (
-    BaseAPIPaginator,
-    BaseOffsetPaginator,
-    TPageToken,
-    first,
-)
 
 requests_cache.install_cache()
 TStream = TypeVar("TStream", bound=RESTStream)
-
-
-class LegacyStreamPaginator(
-    BaseAPIPaginator[TPageToken],
-    Generic[TPageToken, TStream],
-):
-    """Paginator that works with REST streams as they exist today."""
-
-    def __init__(
-        self,
-        start_value: TPageToken,
-        stream: TStream,
-        *args: Any,
-        **kwargs: Any,
-    ) -> None:
-        """Create a new paginator.
-
-        Args:
-            start_value: Initial value for the paginator
-            stream: A RESTStream instance.
-            args: Paginator positional arguments.
-            kwargs: Paginator keyword arguments.
-        """
-        super().__init__(start_value, *args, **kwargs)
-        self.stream = stream
-
-    def get_next(self, response: requests.Response) -> TPageToken | None:
-        """Get next page value by calling the stream method.
-
-        Args:
-            response: API response object.
-
-        Returns:
-            The next page token or index. Return `None` from this method to indicate
-                the end of pagination.
-        """
-        return self.stream.get_next_page_token(response, self.current_value)
 
 
 class ReadTheDocsPaginator(BaseOffsetPaginator):
