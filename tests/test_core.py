@@ -23,7 +23,6 @@ def test_standard_tap_tests():
 
 def test_paginator():
     """Validate paginator that uses the page offset."""
-
     response = Response()
     paginator = ReadTheDocsPaginator(
         start_value=0,
