@@ -1,8 +1,6 @@
 # `tap-readthedocs`
 
-[![Test](https://github.com/edgarrmondragon/tap-readthedocs/actions/workflows/ci_workflow.yml/badge.svg)](https://github.com/edgarrmondragon/tap-readthedocs/actions/workflows/ci_workflow.yml)
-
-ReadTheDocs tap class.
+Singer tap for readthedocs.io.
 
 Built with the [Meltano SDK](https://sdk.meltano.com) for Singer Taps and Targets.
 
