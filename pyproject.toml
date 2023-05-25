@@ -7,7 +7,7 @@ requires = [
 
 [tool.poetry]
 name = "tap-readthedocs"
-version = "0.0.1"
+version = "0.0.0"
 description = "`tap-readthedocs` is a Singer tap for ReadTheDocs, built with the Meltano SDK for Singer Taps."
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 keywords = [
