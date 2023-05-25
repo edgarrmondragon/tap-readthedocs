@@ -1,8 +1,22 @@
-# `tap-readthedocs`
+<div align="center">
 
-Singer tap for readthedocs.io.
+# tap-readthedocs
 
-Built with the [Meltano SDK](https://sdk.meltano.com) for Singer Taps and Targets.
+<div>
+  <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/tap-readthedocs/main">
+    <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/tap-readthedocs/main.svg"/>
+  </a>
+  <a href="https://github.com/edgarrmondragon/tap-readthedocs/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/tap-readthedocs"/>
+  </a>
+  <a href="https://github.com/edgarrmondragon/tap-readthedocs/">
+    <img alt="License" src="https://img.shields.io/pypi/pyversions/tap-readthedocs"/>
+  </a>
+</div>
+
+Singer Tap for [**Read the Docs**](https://docs.readthedocs.io). Built with the [Meltano Singer SDK](https://sdk.meltano.com).
+
+</div>
 
 ## Capabilities
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from requests import Response
-from singer_sdk.testing import get_standard_tap_tests
+from singer_sdk.testing import SuiteConfig, get_tap_test_class
 
 from tap_readthedocs.client import ReadTheDocsPaginator
 from tap_readthedocs.streams import ReadTheDocsStream
@@ -14,11 +14,13 @@ from tap_readthedocs.tap import TapReadTheDocs
 SAMPLE_CONFIG: dict[str, Any] = {}
 
 
-def test_standard_tap_tests():
-    """Run standard tap tests from the SDK."""
-    tests = get_standard_tap_tests(TapReadTheDocs, config=SAMPLE_CONFIG)
-    for test in tests:
-        test()
+TestTapReadTheDocs = get_tap_test_class(
+    TapReadTheDocs,
+    config=SAMPLE_CONFIG,
+    suite_config=SuiteConfig(
+        max_records_limit=10,
+    ),
+)
 
 
 def test_paginator():
@@ -36,16 +38,16 @@ def test_paginator():
     response._content = b'{"results": [{}, {}]}'
     paginator.advance(response)
     assert not paginator.finished
-    assert paginator.current_value == 2
+    assert paginator.current_value == 2  # noqa: PLR2004
     assert paginator.count == 1
 
     response._content = b'{"results": [{}, {}]}'
     paginator.advance(response)
     assert not paginator.finished
-    assert paginator.current_value == 4
-    assert paginator.count == 2
+    assert paginator.current_value == 4  # noqa: PLR2004
+    assert paginator.count == 2  # noqa: PLR2004
 
     response._content = b'{"results": []}'
     paginator.advance(response)
     assert paginator.finished
-    assert paginator.count == 3
+    assert paginator.count == 3  # noqa: PLR2004

@@ -1,7 +1,7 @@
 """Stream type classes for tap-readthedocs."""
+from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from singer_sdk import typing as th
 from toolz.dicttoolz import update_in
@@ -56,14 +56,18 @@ class Projects(ReadTheDocsStream):
             th.ArrayType(
                 th.ObjectType(
                     th.Property("username", th.StringType),
-                )
+                ),
             ),
         ),
         th.Property("active_versions", th.ObjectType()),
         th.Property("homepage", th.StringType),
     ).to_dict()
 
-    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+    def get_child_context(
+        self,
+        record: dict,
+        context: dict | None,  # noqa: ARG002
+    ) -> dict:
         """Get child context for a project.
 
         Args:
@@ -133,7 +137,8 @@ class Builds(ReadTheDocsStream):
             th.ObjectType(
                 th.Property("version", th.StringType),
                 th.Property("formats", th.ArrayType(th.StringType)),
-                # TODO: add other configs here (sphinx, etc.)
+                # TODO(edgarrmondragon): add other configs here (sphinx, etc.)
+                # https://github.com/edgarrmondragon/tap-readthedocs/issues/227
                 th.Property(
                     "python",
                     th.ObjectType(
@@ -149,7 +154,7 @@ class Builds(ReadTheDocsStream):
                                         "extra_requirements",
                                         th.ArrayType(th.StringType),
                                     ),
-                                )
+                                ),
                             ),
                         ),
                         th.Property("system_packages", th.BooleanType),
@@ -159,7 +164,11 @@ class Builds(ReadTheDocsStream):
         ),
     ).to_dict()
 
-    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+    def post_process(
+        self,
+        row: dict,
+        context: dict | None = None,  # noqa: ARG002
+    ) -> dict | None:
         """Modify build record.
 
         Args:
@@ -182,7 +191,8 @@ class Subprojects(ReadTheDocsStream):
     primary_keys = ["id"]
     parent_stream_type = Projects
 
-    # TODO: get the complete schema
+    # TODO(edgarrmondragon): get the complete schema
+    # https://github.com/edgarrmondragon/tap-readthedocs/issues/2
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
     ).to_dict()
@@ -196,7 +206,8 @@ class Translations(ReadTheDocsStream):
     primary_keys = ["id"]
     parent_stream_type = Projects
 
-    # TODO: get the complete schema
+    # TODO(edgarrmondragon): get the complete schema
+    # https://github.com/edgarrmondragon/tap-readthedocs/issues/2
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
     ).to_dict()
@@ -210,7 +221,8 @@ class Redirects(ReadTheDocsStream):
     primary_keys = ["id"]
     parent_stream_type = Projects
 
-    # TODO: get the complete schema
+    # TODO(edgarrmondragon): get the complete schema
+    # https://github.com/edgarrmondragon/tap-readthedocs/issues/2
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
     ).to_dict()

@@ -1,27 +1,10 @@
 """ReadTheDocs tap class."""
-
-from typing import List
+from __future__ import annotations
 
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
 
-from tap_readthedocs.streams import (
-    Builds,
-    Projects,
-    Redirects,
-    Subprojects,
-    Translations,
-    Versions,
-)
-
-STREAM_TYPES = [
-    Builds,
-    Projects,
-    Redirects,
-    Subprojects,
-    Translations,
-    Versions,
-]
+from tap_readthedocs import streams
 
 
 class TapReadTheDocs(Tap):
@@ -33,10 +16,17 @@ class TapReadTheDocs(Tap):
         th.Property("token", th.StringType, required=True),
     ).to_dict()
 
-    def discover_streams(self) -> List[Stream]:
+    def discover_streams(self) -> list[Stream]:
         """Return a list of discovered streams.
 
         Returns:
             A list of ReadTheDocs streams.
         """
-        return [stream_class(tap=self) for stream_class in STREAM_TYPES]
+        return [
+            streams.Builds(tap=self),
+            streams.Projects(tap=self),
+            streams.Redirects(tap=self),
+            streams.Subprojects(tap=self),
+            streams.Translations(tap=self),
+            streams.Versions(tap=self),
+        ]
