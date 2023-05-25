@@ -1,6 +1,9 @@
 name: Test tap-readthedocs
 
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request: {}
 
 jobs:
   tests:

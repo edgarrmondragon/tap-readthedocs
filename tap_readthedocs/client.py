@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, TypeVar
+import typing as t
+from http import HTTPStatus
 
-import requests
 import requests_cache
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.exceptions import RetriableAPIError
@@ -12,8 +12,11 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseOffsetPaginator, first
 from singer_sdk.streams import RESTStream
 
+if t.TYPE_CHECKING:
+    import requests
+
 requests_cache.install_cache()
-TStream = TypeVar("TStream", bound=RESTStream)
+TStream = t.TypeVar("TStream", bound=RESTStream)
 
 
 class ReadTheDocsPaginator(BaseOffsetPaginator):
@@ -44,7 +47,7 @@ class ReadTheDocsPaginator(BaseOffsetPaginator):
                 extract_jsonpath(
                     self._records_jsonpath,
                     response.json(),
-                )
+                ),
             )
         except StopIteration:
             return False
@@ -93,15 +96,15 @@ class ReadTheDocsStream(RESTStream):
         Raises:
             RetriableAPIError: If the rate limit is hit.
         """
-        if response.status_code == 429:
+        if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
             raise RetriableAPIError(response.reason)
         super().validate_response(response)
 
     def get_url_params(
         self,
-        context: dict | None,
-        next_page_token: Any | None,
-    ) -> dict[str, Any]:
+        context: dict | None,  # noqa: ARG002
+        next_page_token: t.Any | None,
+    ) -> dict[str, t.Any]:
         """Get URL query parameters.
 
         Args:
@@ -128,27 +131,3 @@ class ReadTheDocsStream(RESTStream):
             page_size=self.page_size,
             records_jsonpath=self.records_jsonpath,
         )
-
-    def request_records(self, context: dict | None) -> Iterable[dict]:
-        """Request records from REST endpoint(s), returning response records.
-
-        If pagination is detected, pages will be recursed automatically.
-
-        Args:
-            context: Stream partition or context dictionary.
-
-        Yields:
-            An item for every record in the response.
-        """
-        paginator = self.get_new_paginator()
-        decorated_request = self.request_decorator(self._request)
-
-        while not paginator.finished:
-            prepared_request = self.prepare_request(
-                context,
-                next_page_token=paginator.current_value,
-            )
-            resp = decorated_request(prepared_request, context)
-            yield from self.parse_response(resp)
-
-            paginator.advance(resp)
