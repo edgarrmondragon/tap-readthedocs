@@ -14,7 +14,7 @@
   </a>
 </div>
 
-Singer Tap for [ReadTheDocs](https://docs.readthedocs.io). Built with the [Meltano Singer SDK](https://sdk.meltano.com).
+Singer Tap for [**Read the Docs**](https://docs.readthedocs.io). Built with the [Meltano Singer SDK](https://sdk.meltano.com).
 
 </div>
 
