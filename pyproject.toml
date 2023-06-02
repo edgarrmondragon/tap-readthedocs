@@ -84,6 +84,7 @@ unfixable = [
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
+
 [tool.ruff.isort]
 known-first-party = ["tap_readthedocs"]
 required-imports = ["from __future__ import annotations"]
