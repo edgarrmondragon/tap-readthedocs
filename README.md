@@ -6,6 +6,12 @@
   <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/tap-readthedocs/main">
     <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/tap-readthedocs/main.svg"/>
   </a>
+  <a href="https://github.com/astral-sh/ruff">
+    <img alt="Ruff" style="max-width:100%;" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json">
+  </a>
+  <a href="https://github.com/wntrblm/nox">
+    <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
+  </a>
   <a href="https://github.com/edgarrmondragon/tap-readthedocs/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/tap-readthedocs"/>
   </a>

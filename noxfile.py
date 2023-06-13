@@ -19,8 +19,8 @@ package = "tap-readthedocs"
 src_dir = "tap_readthedocs"
 tests_dir = "tests"
 
-python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-main_python_version = "3.10"
+python_versions = ["3.11", "3.10", "3.9"]
+main_python_version = "3.11"
 locations = src_dir, tests_dir, "noxfile.py"
 
 
