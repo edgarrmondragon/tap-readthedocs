@@ -9,6 +9,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
+      NOXSESSION: tests
       SETUPTOOLS_USE_DISTUTILS: stdlib
       PIP_CONSTRAINT: .github/workflows/constraints.txt
     strategy:
@@ -34,13 +35,14 @@ jobs:
         pipx install poetry
         poetry --version
 
-    - name: Install tox
+    - name: Install Nox
       run: |
-        pipx install tox
-        tox --version
+        pipx install nox
+        pipx inject nox nox-poetry
+        nox --version
 
-    - name: Run lint command from tox.ini
+    - name: Run Nox
       env:
         TAP_READTHEDOCS_TOKEN: ${{ secrets.TAP_READTHEDOCS_TOKEN }}
       run: |
-        tox -e pytest
+        nox
