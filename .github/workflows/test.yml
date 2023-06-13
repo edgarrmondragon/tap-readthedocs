@@ -9,6 +9,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
+      NOXPYTHON: ${{ matrix.python-version }}
       NOXSESSION: tests
       SETUPTOOLS_USE_DISTUTILS: stdlib
       PIP_CONSTRAINT: .github/workflows/constraints.txt
