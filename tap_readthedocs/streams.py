@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import typing as t
 
 from singer_sdk import typing as th
 from toolz.dicttoolz import update_in
@@ -16,7 +17,7 @@ class Projects(ReadTheDocsStream):
 
     name = "projects"
     path = "/api/v3/projects/"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
@@ -85,7 +86,7 @@ class Versions(ReadTheDocsStream):
 
     name = "versions"
     path = "/api/v3/projects/{project_slug}/versions"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
     parent_stream_type = Projects
 
     schema = th.PropertiesList(
@@ -110,7 +111,7 @@ class Builds(ReadTheDocsStream):
 
     name = "builds"
     path = "/api/v3/projects/{project_slug}/builds"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
     parent_stream_type = Projects
 
     schema = th.PropertiesList(
@@ -188,7 +189,7 @@ class Subprojects(ReadTheDocsStream):
 
     name = "subprojects"
     path = "/api/v3/projects/{project_slug}/subprojects"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
@@ -203,7 +204,7 @@ class Translations(ReadTheDocsStream):
 
     name = "translations"
     path = "/api/v3/projects/{project_slug}/translations"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
@@ -218,7 +219,7 @@ class Redirects(ReadTheDocsStream):
 
     name = "redirects"
     path = "/api/v3/projects/{project_slug}/redirects"
-    primary_keys = ["id"]
+    primary_keys: t.ClassVar[list[str]] = ["id"]
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
