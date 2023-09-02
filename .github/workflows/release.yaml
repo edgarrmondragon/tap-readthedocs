@@ -17,7 +17,7 @@ jobs:
       PIP_CONSTRAINT: .github/workflows/constraints.txt
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
         with:
           fetch-depth: 0
 
@@ -50,4 +50,4 @@ jobs:
           file_glob: true
 
       - name: Publish
-        uses: pypa/gh-action-pypi-publish@v1.8.8
+        uses: pypa/gh-action-pypi-publish@v1.8.10
