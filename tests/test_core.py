@@ -7,8 +7,7 @@ from typing import Any
 from requests import Response
 from singer_sdk.testing import SuiteConfig, get_tap_test_class
 
-from tap_readthedocs.client import ReadTheDocsPaginator
-from tap_readthedocs.streams import ReadTheDocsStream
+from tap_readthedocs.client import ReadTheDocsPaginator, ReadTheDocsStream
 from tap_readthedocs.tap import TapReadTheDocs
 
 SAMPLE_CONFIG: dict[str, Any] = {}
@@ -30,7 +29,7 @@ TestTapReadTheDocs = get_tap_test_class(
 )
 
 
-def test_paginator():
+def test_paginator() -> None:
     """Validate paginator that uses the page offset."""
     response = Response()
     paginator = ReadTheDocsPaginator(
