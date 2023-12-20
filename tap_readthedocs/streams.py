@@ -66,9 +66,9 @@ class Projects(ReadTheDocsStream):
 
     def get_child_context(
         self,
-        record: dict,
-        context: dict | None,  # noqa: ARG002
-    ) -> dict:
+        record: dict[str, t.Any],
+        context: dict[str, t.Any] | None,  # noqa: ARG002
+    ) -> dict[str, t.Any] | None:
         """Get child context for a project.
 
         Args:
@@ -167,9 +167,9 @@ class Builds(ReadTheDocsStream):
 
     def post_process(
         self,
-        row: dict,
-        context: dict | None = None,  # noqa: ARG002
-    ) -> dict | None:
+        row: dict[str, t.Any],
+        context: dict[str, t.Any] | None = None,  # noqa: ARG002
+    ) -> dict[str, t.Any] | None:
         """Modify build record.
 
         Args:

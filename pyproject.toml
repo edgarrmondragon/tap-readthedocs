@@ -1,53 +1,73 @@
 [build-system]
-build-backend = "poetry_dynamic_versioning.backend"
+build-backend = "hatchling.build"
 requires = [
-  "poetry-core==1.6",
-  "poetry-dynamic-versioning",
+  "hatch-vcs",
+  "hatchling",
 ]
 
-[tool.poetry]
+[project]
 name = "tap-readthedocs"
-version = "0.0.0"
 description = "`tap-readthedocs` is a Singer tap for ReadTheDocs, built with the Meltano SDK for Singer Taps."
-authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
+readme = "README.md"
 keywords = [
-    "ELT",
-    "ReadTheDocs",
-    "singer.io",
+  "ELT",
+  "ReadTheDocs",
+  "singer.io",
 ]
 license = "Apache-2.0"
-readme = "README.md"
-homepage = "https://github.com/edgarrmondragon/tap-readthedocs"
-repository = "https://github.com/edgarrmondragon/tap-readthedocs"
-documentation = "https://github.com/edgarrmondragon/tap-readthedocs#readme"
+maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "requests-cache~=1.0",
+  "singer-sdk~=0.34.0",
+  "toolz~=0.12.0",
+]
+optional-dependencies.dev = [
+  "tap-readthedocs[testing,typing]",
+]
+optional-dependencies.testing = [
+  "deptry>=0.12",
+  "pytest>=7.4",
+  "singer-sdk[testing]~=0.34.0",
+]
+optional-dependencies.typing = [
+  "mypy",
+  "types-requests",
+]
+urls.documentation = "https://github.com/edgarrmondragon/tap-readthedocs#readme"
+urls.homepage = "https://github.com/edgarrmondragon/tap-readthedocs"
+urls.repository = "https://github.com/edgarrmondragon/tap-readthedocs"
+scripts."tap-readthedocs" = 'tap_readthedocs.tap:TapReadTheDocs.cli'
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4"
-singer-sdk = "~=0.34.0"
-toolz = "~=0.12.0"
-requests-cache = "~=1.0"
+[tool.hatch.version]
+source = "vcs"
 
-[tool.poetry.dev-dependencies]
-singer-sdk = { version = "*", extras = ["testing"] }
+[tool.hatch.envs.sync.scripts]
+console = "tap-readthedocs {args}"
+jsonl = "tap-readthedocs {args} > tap-readthedocs.jsonl"
 
-[tool.poetry.scripts]
-# CLI declaration
-tap-readthedocs = 'tap_readthedocs.tap:TapReadTheDocs.cli'
+[tool.hatch.envs.test]
+features = ["testing"]
+[tool.hatch.envs.test.scripts]
+integration = "pytest {args:tests}"
+dependencies = "deptry ."
 
-[tool.poetry-dynamic-versioning]
-enable = true
-format-jinja = """
-    {%- if distance == 0 -%}
-        {{ serialize_pep440(base, stage, revision) }}
-    {%- elif revision is not none -%}
-        {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
-    {%- else -%}
-        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
-    {%- endif -%}
-"""
-metadata = true
-style = "pep440"
-vcs = "git"
+[tool.hatch.envs.typing]
+features = ["testing", "typing"]
+[tool.hatch.envs.typing.scripts]
+check = "mypy --strict {args:tap_readthedocs tests}"
 
 [tool.ruff]
 line-length = 88
@@ -84,11 +104,23 @@ required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.deptry.package_module_name_map]
+mypy = "mypy"
+tap-readthedocs = "tap_readthedocs"
+types-requests = "requests"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "deptry",
+  "mypy",
+  "pytest",
+]
+
 [tool.pytest.ini_options]
 addopts = "-vvv"
 
 [tool.mypy]
-python_version = 3.9
+python_version = 3.12
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]

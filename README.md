@@ -9,8 +9,8 @@
   <a href="https://github.com/astral-sh/ruff">
     <img alt="Ruff" style="max-width:100%;" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json">
   </a>
-  <a href="https://github.com/wntrblm/nox">
-    <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
+  <a href="https://github.com/pypa/hatch">
+    <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
   </a>
   <a href="https://github.com/edgarrmondragon/tap-readthedocs/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/tap-readthedocs"/>
@@ -67,22 +67,21 @@ tap-readthedocs --config CONFIG --discover > ./catalog.json
 ### Initialize your Development Environment
 
 ```bash
-pipx install poetry
-poetry install
+pipx install hatch
 ```
 
 ### Create and Run Tests
 
-Create tests within the `tests` folder and then run:
+Run integration tests:
 
 ```bash
-poetry run pytest
+hatch run tests:integration
 ```
 
-You can also test the `tap-readthedocs` CLI interface directly using `poetry run`:
+You can also test the `tap-readthedocs` CLI interface directly:
 
 ```bash
-poetry run tap-readthedocs --help
+hatch run sync:console -- --about --format=json
 ```
 
 ### Testing with [Meltano](https://www.meltano.com)
@@ -90,24 +89,25 @@ poetry run tap-readthedocs --help
 _**Note:** This tap will work in any Singer environment and does not require Meltano.
 Examples here are for convenience and to streamline end-to-end orchestration scenarios._
 
-Next, install Meltano (if you haven't already) and any needed plugins:
+Your project comes with a custom `meltano.yml` project file already created. Go ahead and [install Meltano](https://docs.meltano.com/getting-started/installation/) if you haven't already.
 
-```bash
-# Install meltano
-pipx install meltano
-# Initialize meltano within this directory
-cd tap-readthedocs
-meltano install
-```
+1. Install all plugins
 
-Now you can test and orchestrate using Meltano:
+   ```bash
+   meltano install
+   ```
 
-```bash
-# Test invocation:
-meltano invoke tap-readthedocs --version
-# OR run a test `elt` pipeline:
-meltano elt tap-readthedocs target-jsonl
-```
+2. Check that the extractor is working properly
+
+   ```bash
+   meltano invoke tap-readthedocs --version
+   ```
+
+3. Execute an ELT pipeline
+
+   ```bash
+   meltano run tap-readthedocs target-jsonl
+   ```
 
 ### SDK Dev Guide
 

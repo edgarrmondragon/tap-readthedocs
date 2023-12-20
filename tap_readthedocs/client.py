@@ -16,7 +16,7 @@ if t.TYPE_CHECKING:
     import requests
 
 requests_cache.install_cache()
-TStream = t.TypeVar("TStream", bound=RESTStream)
+TStream = t.TypeVar("TStream", bound=RESTStream[int])
 
 
 class ReadTheDocsPaginator(BaseOffsetPaginator):
@@ -55,7 +55,7 @@ class ReadTheDocsPaginator(BaseOffsetPaginator):
         return True
 
 
-class ReadTheDocsStream(RESTStream):
+class ReadTheDocsStream(RESTStream[int]):
     """ReadTheDocs stream class."""
 
     url_base = "https://readthedocs.org"
@@ -77,15 +77,13 @@ class ReadTheDocsStream(RESTStream):
         )
 
     @property
-    def http_headers(self) -> dict:
+    def http_headers(self) -> dict[str, str]:
         """Return the http headers needed.
 
         Returns:
             A dictionary of HTTP headers.
         """
-        headers = {}
-        headers["User-Agent"] = f"{self.tap_name}/{self._tap.plugin_version}"
-        return headers
+        return {"User-Agent": f"{self.tap_name}/{self._tap.plugin_version}"}
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
@@ -102,7 +100,7 @@ class ReadTheDocsStream(RESTStream):
 
     def get_url_params(
         self,
-        context: dict | None,  # noqa: ARG002
+        context: dict[str, t.Any] | None,  # noqa: ARG002
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Get URL query parameters.
