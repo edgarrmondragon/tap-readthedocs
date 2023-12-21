@@ -16,7 +16,7 @@
     <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/tap-readthedocs"/>
   </a>
   <a href="https://github.com/edgarrmondragon/tap-readthedocs/">
-    <img alt="License" src="https://img.shields.io/pypi/pyversions/tap-readthedocs"/>
+    <img alt="PyPI" src="https://img.shields.io/pypi/pyversions/tap-readthedocs"/>
   </a>
 </div>
 
