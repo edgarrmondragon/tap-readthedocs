@@ -14,7 +14,7 @@ keywords = [
   "ReadTheDocs",
   "singer.io",
 ]
-license = "Apache-2.0"
+license.file = "LICENSE"
 maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
 authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
 requires-python = ">=3.8"
@@ -31,7 +31,7 @@ dynamic = [
 ]
 dependencies = [
   "requests-cache~=1.0",
-  "singer-sdk~=0.34.0",
+  "singer-sdk~=0.35.0a5",
   "toolz~=0.12.0",
 ]
 optional-dependencies.dev = [
@@ -40,15 +40,15 @@ optional-dependencies.dev = [
 optional-dependencies.testing = [
   "deptry>=0.12",
   "pytest>=7.4",
-  "singer-sdk[testing]~=0.34.0",
+  "singer-sdk[testing]~=0.35.0a5",
 ]
 optional-dependencies.typing = [
   "mypy",
   "types-requests",
 ]
-urls.documentation = "https://github.com/edgarrmondragon/tap-readthedocs#readme"
-urls.homepage = "https://github.com/edgarrmondragon/tap-readthedocs"
-urls.repository = "https://github.com/edgarrmondragon/tap-readthedocs"
+urls.Documentation = "https://github.com/edgarrmondragon/tap-readthedocs#readme"
+urls.Homepage = "https://github.com/edgarrmondragon/tap-readthedocs"
+urls.Repository = "https://github.com/edgarrmondragon/tap-readthedocs"
 scripts."tap-readthedocs" = 'tap_readthedocs.tap:TapReadTheDocs.cli'
 
 [tool.hatch.version]
@@ -63,6 +63,11 @@ features = ["testing"]
 [tool.hatch.envs.test.scripts]
 integration = "pytest {args:tests}"
 dependencies = "deptry ."
+
+[tool.hatch.envs.all]
+template = "test"
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.typing]
 features = ["testing", "typing"]
@@ -118,9 +123,19 @@ DEP002 = [
 
 [tool.pytest.ini_options]
 addopts = "-vvv"
+filterwarnings = [
+  "error",
+  "default:Fields in transformed catalog but not in records:UserWarning",
+  "default:No records returned in stream 'projects:UserWarning",
+  "default:No records returned in stream 'redirects:UserWarning",
+  "default:No records returned in stream 'subprojects:UserWarning",
+  "default:No records returned in stream 'translations:UserWarning",
+  "default:No records returned in stream 'versions:UserWarning",
+  "default:No records were available to test:UserWarning",
+]
 
 [tool.mypy]
-python_version = 3.12
+python_version = "3.12"
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
