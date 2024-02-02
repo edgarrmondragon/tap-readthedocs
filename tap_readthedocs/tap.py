@@ -1,10 +1,15 @@
 """ReadTheDocs tap class."""
 from __future__ import annotations
 
-from singer_sdk import Stream, Tap
+import typing as t
+
+from singer_sdk import Tap
 from singer_sdk import typing as th
 
 from tap_readthedocs import streams
+
+if t.TYPE_CHECKING:
+    from tap_readthedocs.client import ReadTheDocsStream
 
 
 class TapReadTheDocs(Tap):
@@ -25,7 +30,7 @@ class TapReadTheDocs(Tap):
         ),
     ).to_dict()
 
-    def discover_streams(self) -> list[Stream]:
+    def discover_streams(self) -> list[ReadTheDocsStream]:
         """Return a list of discovered streams.
 
         Returns:
