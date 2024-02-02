@@ -17,7 +17,7 @@ class Projects(ReadTheDocsStream):
 
     name = "projects"
     path = "/api/v3/projects/"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
 
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
@@ -86,7 +86,7 @@ class Versions(ReadTheDocsStream):
 
     name = "versions"
     path = "/api/v3/projects/{project_slug}/versions"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
     parent_stream_type = Projects
 
     schema = th.PropertiesList(
@@ -111,7 +111,7 @@ class Builds(ReadTheDocsStream):
 
     name = "builds"
     path = "/api/v3/projects/{project_slug}/builds"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
     parent_stream_type = Projects
 
     schema = th.PropertiesList(
@@ -189,7 +189,7 @@ class Subprojects(ReadTheDocsStream):
 
     name = "subprojects"
     path = "/api/v3/projects/{project_slug}/subprojects"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
@@ -204,7 +204,7 @@ class Translations(ReadTheDocsStream):
 
     name = "translations"
     path = "/api/v3/projects/{project_slug}/translations"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
@@ -219,11 +219,82 @@ class Redirects(ReadTheDocsStream):
 
     name = "redirects"
     path = "/api/v3/projects/{project_slug}/redirects"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
+    primary_keys = ("id",)
     parent_stream_type = Projects
 
     # TODO(edgarrmondragon): get the complete schema
     # https://github.com/edgarrmondragon/tap-readthedocs/issues/2
     schema = th.PropertiesList(
         th.Property("id", th.StringType),
+        # TODO(edgarrmondragon): Inform max length of 255
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property("redirect_type", th.StringType),
+        # TODO(edgarrmondragon): Inform max length of 255
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property(
+            "from_url",
+            th.StringType,
+            description="Absolute path, excluding the domain",
+            examples=["/docs/", "/install.html"],
+        ),
+        # TODO(edgarrmondragon): Inform max length of 255
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property(
+            "to_url",
+            th.StringType,
+            description="Absolute or relative URL",
+            examples=["/tutorial/install.html"],
+        ),
+        th.Property(
+            "force",
+            th.BooleanType,
+            description="Apply the redirect even if the page exists",
+        ),
+        # TODO(edgarrmondragon): Inform "small" integer
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property(
+            "http_status",
+            th.IntegerType,
+            description="HTTP status code for the redirect",
+        ),
+        th.Property("enabled", th.BooleanType),
+        # TODO(edgarrmondragon): Inform max length of 255
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property("description", th.StringType),
+        # TODO(edgarrmondragon): Inform positive integer
+        # https://github.com/edgarrmondragon/tap-readthedocs/issues/295
+        th.Property(
+            "position",
+            th.IntegerType,
+            description="Order of execution of the redirect",
+        ),
+        th.Property("create_dt", th.DateTimeType),
+        th.Property("update_dt", th.DateTimeType),
+    ).to_dict()
+
+
+class Organizations(ReadTheDocsStream):
+    """Organizations stream."""
+
+    name = "organizations"
+    path = "/api/v3/organizations/"
+    primary_keys = ("slug",)
+
+    schema = th.PropertiesList(
+        th.Property("slug", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("url", th.StringType),
+        th.Property("email", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("created", th.DateTimeType),
+        th.Property("modified", th.DateTimeType),
+        th.Property("disabled", th.BooleanType),
+        th.Property(
+            "owners",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("username", th.StringType),
+                ),
+            ),
+        ),
     ).to_dict()

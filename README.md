@@ -37,13 +37,14 @@ Singer Tap for [**Read the Docs**](https://docs.readthedocs.io). Built with the 
 | Setting| Required | Default | Description |
 |:-------|:--------:|:-------:|:------------|
 | token  | True     | None    |             |
+| include_business_streams | False | False | Whether to include streams available only to ReadTheDocs for Business accounts |
 
 A full list of supported settings and capabilities is available by running: `tap-readthedocs --about`
 
 ## Installation
 
 ```bash
-pipx install git+https://github.com/edgarrmondragon/tap-readthedocs.git
+pipx install tap-readthedocs
 ```
 
 ### Source Authentication and Authorization

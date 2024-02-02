@@ -14,6 +14,15 @@ class TapReadTheDocs(Tap):
 
     config_jsonschema = th.PropertiesList(
         th.Property("token", th.StringType, required=True),
+        th.Property(
+            "include_business_streams",
+            th.BooleanType,
+            description=(
+                "Whether to include streams available only to ReadTheDocs for Business "
+                "accounts."
+            ),
+            default=False,
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[Stream]:
@@ -22,7 +31,7 @@ class TapReadTheDocs(Tap):
         Returns:
             A list of ReadTheDocs streams.
         """
-        return [
+        result = [
             streams.Builds(tap=self),
             streams.Projects(tap=self),
             streams.Redirects(tap=self),
@@ -30,3 +39,10 @@ class TapReadTheDocs(Tap):
             streams.Translations(tap=self),
             streams.Versions(tap=self),
         ]
+
+        if self.config.get("include_business_streams", False):
+            result.extend(
+                [streams.Organizations(tap=self)],
+            )
+
+        return result
