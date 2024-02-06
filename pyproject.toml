@@ -31,7 +31,7 @@ dynamic = [
 ]
 dependencies = [
   "requests-cache~=1.0",
-  "singer-sdk~=0.35.0a5",
+  "singer-sdk~=0.35.0",
   "toolz~=0.12.0",
 ]
 optional-dependencies.dev = [
@@ -40,7 +40,7 @@ optional-dependencies.dev = [
 optional-dependencies.testing = [
   "deptry>=0.12",
   "pytest>=7.4",
-  "singer-sdk[testing]~=0.35.0a5",
+  "singer-sdk[testing]~=0.35.0",
 ]
 optional-dependencies.typing = [
   "mypy",
