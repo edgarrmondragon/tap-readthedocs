@@ -125,7 +125,6 @@ DEP002 = [
 addopts = "-vvv"
 filterwarnings = [
   "error",
-  """ignore:datetime.datetime.utcnow\\(\\) is deprecated:DeprecationWarning:requests_cache.models.response""",
   "default:Fields in transformed catalog but not in records:UserWarning",
   "default:No records returned in stream 'projects:UserWarning",
   "default:No records returned in stream 'redirects:UserWarning",
