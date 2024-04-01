@@ -1,4 +1,5 @@
 """Stream type classes for tap-readthedocs."""
+
 from __future__ import annotations
 
 import logging
