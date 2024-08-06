@@ -10,6 +10,9 @@ from toolz.dicttoolz import update_in
 
 from tap_readthedocs.client import ReadTheDocsStream
 
+if t.TYPE_CHECKING:
+    from singer_sdk.helpers.types import Context
+
 logger = logging.getLogger(__name__)
 
 
@@ -68,7 +71,7 @@ class Projects(ReadTheDocsStream):
     def get_child_context(
         self,
         record: dict[str, t.Any],
-        context: dict[str, t.Any] | None,  # noqa: ARG002
+        context: Context | None,  # noqa: ARG002
     ) -> dict[str, t.Any] | None:
         """Get child context for a project.
 
@@ -169,7 +172,7 @@ class Builds(ReadTheDocsStream):
     def post_process(
         self,
         row: dict[str, t.Any],
-        context: dict[str, t.Any] | None = None,  # noqa: ARG002
+        context: Context | None = None,  # noqa: ARG002
     ) -> dict[str, t.Any] | None:
         """Modify build record.
 
