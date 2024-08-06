@@ -13,6 +13,7 @@ from singer_sdk.streams import RESTStream
 
 if t.TYPE_CHECKING:
     import requests
+    from singer_sdk.helpers.types import Context
 
 requests_cache.install_cache()
 TStream = t.TypeVar("TStream", bound=RESTStream[int])
@@ -63,7 +64,7 @@ class ReadTheDocsStream(RESTStream[int]):
 
     def get_url_params(
         self,
-        context: dict[str, t.Any] | None,  # noqa: ARG002
+        context: Context | None,  # noqa: ARG002
         next_page_token: int | None,
     ) -> dict[str, t.Any]:
         """Get URL query parameters.
