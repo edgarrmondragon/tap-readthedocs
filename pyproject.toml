@@ -7,7 +7,7 @@ requires = [
 
 [project]
 name = "tap-readthedocs"
-description = "`tap-readthedocs` is a Singer tap for ReadTheDocs, built with the Meltano SDK for Singer Taps."
+description = "Singer tap for ReadTheDocs, built with the Meltano SDK for Singer Taps."
 readme = "README.md"
 keywords = [
   "ELT",
