@@ -40,8 +40,8 @@ jobs:
         - "3.12"
         - "3.13"
         include:
-        - { script: "test:dependencies", python-version: "3.12" }
-        - { script: "typing:check",      python-version: "3.12" }
+        - { script: "test:dependencies", python-version: "3.x" }
+        - { script: "typing:check",      python-version: "3.x" }
 
     steps:
     - name: Checkout code
@@ -62,11 +62,12 @@ jobs:
 
     - name: Install Hatch
       run: |
-        pipx install --python '${{ steps.setup-python.outputs.python-path }}' hatch
+        pipx install hatch
         hatch --version
 
     - name: Run
       env:
+        HATCH_PYTHON: ${{ steps.setup-python.outputs.python-path }}
         TAP_READTHEDOCS_TOKEN: ${{ secrets.TAP_READTHEDOCS_TOKEN }}
       run: |
         hatch run ${{ matrix.script }}
