@@ -35,7 +35,7 @@ dynamic = [
 ]
 dependencies = [
   "requests-cache~=1.0",
-  "singer-sdk~=0.42.1",
+  "singer-sdk~=0.43.1",
   "toolz~=1.0.0",
 ]
 optional-dependencies.dev = [
@@ -96,7 +96,6 @@ lint.select = [
   "ALL",
 ]
 lint.ignore = [
-  "ANN101", # missing-type-self
   "COM812", # missing-trailing-comma
   "DJ",     # flake8-django
   "FIX002", # line-contains-todo
@@ -148,6 +147,7 @@ filterwarnings = [
   "default:No records returned in stream 'translations:UserWarning",
   "default:No records returned in stream 'versions:UserWarning",
   "default:No records were available to test:UserWarning",
+  "default:Use `http_method` instead:singer_sdk.helpers._compat.SingerSDKDeprecationWarning",
 ]
 
 [tool.mypy]
