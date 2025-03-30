@@ -1092,14 +1092,14 @@ wheels = [
 
 [[package]]
 name = "url-normalize"
-version = "1.4.3"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "six" },
+    { name = "idna" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/ea/780a38c99fef750897158c0afb83b979def3b379aaac28b31538d24c4e8f/url-normalize-1.4.3.tar.gz", hash = "sha256:d23d3a070ac52a67b83a1c59a0e68f8608d1cd538783b401bc9de2c0fac999b2", size = 6024 }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/43/544f33f375c1936459448cf403da60917d87afa4188ba129f1d4a4b8bf8e/url_normalize-2.0.1.tar.gz", hash = "sha256:f45566acecd1a10b198b22bac6737887a261d08f4254c058294bd10e777fb5cf", size = 13559 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/1c/6c6f408be78692fc850006a2b6dea37c2b8592892534e09996e401efc74b/url_normalize-1.4.3-py2.py3-none-any.whl", hash = "sha256:ec3c301f04e5bb676d333a7fa162fa977ad2ca04b7e652bfc9fac4e405728eed", size = 6804 },
+    { url = "https://files.pythonhosted.org/packages/1f/ed/fd351be051bc083cc44bd7c7e7bf2e596074221f2779ccae23d67db57d36/url_normalize-2.0.1-py3-none-any.whl", hash = "sha256:c15cabbee757b94c86868bc2adb1d31679851307681e2f3d424b40e652799231", size = 11731 },
 ]
 
 [[package]]
