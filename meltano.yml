@@ -6,6 +6,7 @@ plugins:
   - name: tap-readthedocs
     namespace: tap_readthedocs
     pip_url: -e .
+    repo: https://github.com/edgarrmondragon/tap-readthedocs
     capabilities:
     - catalog
     - discover

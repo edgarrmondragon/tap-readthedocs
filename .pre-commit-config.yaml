@@ -38,6 +38,7 @@ repos:
     rev: 0.32.1
     hooks:
     - id: check-github-workflows
+    - id: check-meltano
     - id: check-renovate
       language: python
       additional_dependencies:
