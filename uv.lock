@@ -10,15 +10,6 @@ resolution-markers = [
 prerelease-mode = "allow"
 
 [[package]]
-name = "appdirs"
-version = "1.4.4"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d7/d8/05696357e0311f5b5c316d7b95f46c669dd9c15aaeecbb48c7d0aeb88c40/appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41", size = 13470, upload-time = "2020-05-11T07:59:51.037Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128", size = 9566, upload-time = "2020-05-11T07:59:49.499Z" },
-]
-
-[[package]]
 name = "attrs"
 version = "25.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -257,20 +248,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0b/9f/a65090624ecf468cdca03533906e7c69ed7588582240cfe7cc9e770b50eb/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88", size = 29749, upload-time = "2025-05-10T17:42:51.123Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/36/f4/c6e662dade71f56cd2f3735141b265c3c79293c109549c1e6933b0651ffc/exceptiongroup-1.3.0-py3-none-any.whl", hash = "sha256:4d111e6e0c13d0644cad6ddaa7ed0261a0b36971f6d23e7ec9b4b9097da78a10", size = 16674, upload-time = "2025-05-10T17:42:49.33Z" },
-]
-
-[[package]]
-name = "fs"
-version = "2.4.16"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "appdirs" },
-    { name = "setuptools" },
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/a9/af5bfd5a92592c16cdae5c04f68187a309be8a146b528eac3c6e30edbad2/fs-2.4.16.tar.gz", hash = "sha256:ae97c7d51213f4b70b6a958292530289090de3a7e15841e108fbe144f069d313", size = 187441, upload-time = "2022-05-02T09:25:54.22Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/5c/a3d95dc1ec6cdeb032d789b552ecc76effa3557ea9186e1566df6aac18df/fs-2.4.16-py2.py3-none-any.whl", hash = "sha256:660064febbccda264ae0b6bace80a8d1be9e089e0a5eb2427b7d517f9a91545c", size = 135261, upload-time = "2022-05-02T09:25:52.363Z" },
 ]
 
 [[package]]
@@ -885,14 +862,13 @@ wheels = [
 
 [[package]]
 name = "singer-sdk"
-version = "0.45.11"
+version = "0.46.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backoff", marker = "python_full_version < '4'" },
     { name = "backports-datetime-fromisoformat", marker = "python_full_version < '3.11'" },
     { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "click", version = "8.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "fs" },
     { name = "fsspec" },
     { name = "importlib-metadata", marker = "python_full_version < '3.12'" },
     { name = "importlib-resources", marker = "python_full_version < '3.10'" },
@@ -905,29 +881,20 @@ dependencies = [
     { name = "pyyaml" },
     { name = "referencing" },
     { name = "requests" },
-    { name = "setuptools" },
     { name = "simpleeval" },
     { name = "simplejson" },
     { name = "sqlalchemy" },
     { name = "typing-extensions" },
+    { name = "universal-pathlib" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0e/8c/da5b4152f80e15cc2f5fd5a45b97e5bc0fcdfb83fe7e685a09187671e1fd/singer_sdk-0.45.11.tar.gz", hash = "sha256:9188f0a61038e53211291d7497aad1959e6dbef81669d97712cdbc1e0675f2e6", size = 1447613, upload-time = "2025-04-28T19:29:19.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f7/fa/d2ed1f2eb9312a542f437b7aaa6c01ad3127e3cf3e9fa452c3ac754b6577/singer_sdk-0.46.1.tar.gz", hash = "sha256:f45a44c4d98134ab29d1e6c81f4f35b8b32d586cc44dd0041bb38976acdeca9a", size = 1440112, upload-time = "2025-05-13T19:55:34.796Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/62/512da05f1b314fe55c9fe7210b5e4c264d9e54b08aa6180f528cb3b890a0/singer_sdk-0.45.11-py3-none-any.whl", hash = "sha256:8c47823642859817ccbbc9a983b9f704d553ecefc9bbfebcd9df504778439b96", size = 190569, upload-time = "2025-04-28T19:29:17.081Z" },
+    { url = "https://files.pythonhosted.org/packages/da/37/ecf1e871e56f03b67b8fd1ed4b369bf8b9c36a43bca0cf9544b95b0e0d3c/singer_sdk-0.46.1-py3-none-any.whl", hash = "sha256:b1d8d372cae7645a21fdb824d96e4aa0539c78968636bd2798db2566a83e6de9", size = 190184, upload-time = "2025-05-13T19:55:32.386Z" },
 ]
 
 [package.optional-dependencies]
 testing = [
     { name = "pytest" },
-]
-
-[[package]]
-name = "six"
-version = "1.17.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
 ]
 
 [[package]]
@@ -1015,7 +982,7 @@ typing = [
 requires-dist = [
     { name = "requests", specifier = "~=2.32.3" },
     { name = "requests-cache", specifier = "~=1.0" },
-    { name = "singer-sdk", specifier = "~=0.45.2" },
+    { name = "singer-sdk", specifier = "~=0.46.1" },
     { name = "toolz", specifier = "~=1.0.0" },
 ]
 
@@ -1116,6 +1083,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f6/37/23083fcd6e35492953e8d2aaaa68b860eb422b34627b13f2ce3eb6106061/typing_extensions-4.13.2.tar.gz", hash = "sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef", size = 106967, upload-time = "2025-04-10T14:19:05.416Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8b/54/b1ae86c0973cc6f0210b53d508ca3641fb6d0c56823f288d108bc7ab3cc8/typing_extensions-4.13.2-py3-none-any.whl", hash = "sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c", size = 45806, upload-time = "2025-04-10T14:19:03.967Z" },
+]
+
+[[package]]
+name = "universal-pathlib"
+version = "0.2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fsspec" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/21/dd871495af3933e585261adce42678dcdf1168c9d6fa0a8f7b6565e54472/universal_pathlib-0.2.6.tar.gz", hash = "sha256:50817aaeaa9f4163cb1e76f5bdf84207fa05ce728b23fd779479b3462e5430ac", size = 175427, upload-time = "2024-12-13T00:58:27.514Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/4d/2e577f6db7aa0f932d19f799c18f604b2b302c65f733419b900ec07dbade/universal_pathlib-0.2.6-py3-none-any.whl", hash = "sha256:700dec2b58ef34b87998513de6d2ae153b22f083197dfafb8544744edabd1b18", size = 50087, upload-time = "2024-12-13T00:58:24.582Z" },
 ]
 
 [[package]]
