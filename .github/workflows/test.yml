@@ -7,7 +7,6 @@ on:
       - tap_readthedocs/**
       - tests/**
       - pyproject.toml
-      - tox.ini
       - uv.lock
       - .github/workflows/test.yml
   pull_request:
@@ -16,7 +15,6 @@ on:
       - tap_readthedocs/**
       - tests/**
       - pyproject.toml
-      - tox.ini
       - uv.lock
       - .github/workflows/test.yml
   workflow_dispatch:
@@ -42,13 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         python-version:
-        - "3.9"
-        - "3.10"
-        - "3.11"
-        - "3.12"
+        - "3.14"
         - "3.13"
+        - "3.12"
+        - "3.11"
+        - "3.10"
+        - "3.9"
         include:
         - { environment: "dependencies", python-version: "3.x" }
         - { environment: "typing",       python-version: "3.x" }

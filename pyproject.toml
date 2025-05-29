@@ -30,6 +30,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
 dynamic = [
   "version",
@@ -96,7 +97,7 @@ lint.isort.required-imports = [
 lint.pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
-max_supported_python = "3.13"
+max_supported_python = "3.14"
 
 [tool.pytest.ini_options]
 addopts = "-vvv"
@@ -110,7 +111,42 @@ filterwarnings = [
   "default:No records returned in stream 'versions:UserWarning",
   "default:No records were available to test:UserWarning",
   "default:Use `http_method` instead:singer_sdk.helpers._compat.SingerSDKDeprecationWarning",
+  # Deprecation message introduced in Python 3.14. Upstream issue: https://github.com/python-attrs/cattrs/issues/635
+  "default:'_UnionGenericAlias' is deprecated and slated for removal in Python 3.17:DeprecationWarning",
+  # Deprecation message introduced in Python 3.14. Upstream PR: https://github.com/litl/backoff/pull/220
+  "default:'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16:DeprecationWarning",
 ]
+
+[tool.tox]
+min_version = "4.22"
+requires = [ "tox", "tox-uv" ]
+env_list = [
+  "dependencies",
+  "typing",
+  "3.14",
+  "3.13",
+  "3.12",
+  "3.11",
+  "3.10",
+  "3.9",
+]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+pass_env = [ "TAP_READTHEDOCS_*" ]
+dependency_groups = [ "testing" ]
+commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
+
+[tool.tox.env.dependencies]
+dependency_groups = [ "testing" ]
+commands = [ [ "deptry", "." ] ]
+
+[tool.tox.env.sync]
+commands = [ [ "tap-readthedocs", { replace = "posargs", default = [ "--config=ENV" ], extend = true } ] ]
+
+[tool.tox.env.typing]
+dependency_groups = [ "testing", "typing" ]
+commands = [ [ "mypy", "--strict", { replace = "posargs", default = [ "tap_readthedocs", "tests" ], extend = true } ] ]
 
 [tool.mypy]
 enable_error_code = [
