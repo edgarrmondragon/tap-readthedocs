@@ -48,7 +48,6 @@ jobs:
         - "3.12"
         - "3.11"
         - "3.10"
-        - "3.9"
         include:
         - { environment: "dependencies", python-version: "3.x" }
         - { environment: "typing",       python-version: "3.x" }
