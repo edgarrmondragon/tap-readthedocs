@@ -880,7 +880,6 @@ wheels = [
 name = "tap-readthedocs"
 source = { editable = "." }
 dependencies = [
-    { name = "requests" },
     { name = "requests-cache" },
     { name = "singer-sdk" },
     { name = "toolz" },
@@ -906,7 +905,6 @@ typing = [
 
 [package.metadata]
 requires-dist = [
-    { name = "requests", specifier = "~=2.32.3" },
     { name = "requests-cache", specifier = "~=1.0" },
     { name = "singer-sdk", specifier = "~=0.48.0" },
     { name = "toolz", specifier = "~=1.0.0" },

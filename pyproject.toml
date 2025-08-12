@@ -35,7 +35,6 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "requests~=2.32.3",
   "requests-cache~=1.0",
   "singer-sdk~=0.48.0",
   "toolz~=1.0.0",
@@ -94,6 +93,10 @@ lint.isort.required-imports = [
   "from __future__ import annotations",
 ]
 lint.pydocstyle.convention = "google"
+
+[tool.deptry.package_module_name_map]
+mypy = "mypy"
+types-requests = "requests"
 
 [tool.pyproject-fmt]
 max_supported_python = "3.14"
